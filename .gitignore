@@ -5,6 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 *prod.properties
+!**/GMP.java
 
 ### STS ###
 .apt_generated

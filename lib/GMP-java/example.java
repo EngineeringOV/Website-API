@@ -15,13 +15,8 @@ class example {
         //p.list(System.out);
 	GMP a = new GMP("243454656");
 	GMP b = new GMP("165758648758768");
-	long startTime=0;
-	for (int i=0;i<20000;i++)
-	    {
-		if(i==1)
-		    {
-			startTime=System.currentTimeMillis();
-		    }
+	long startTime=System.currentTimeMillis();
+	for (int i=0;i<20000;i++) {
 		a.multiply(b,a);
 	    }
 	System.out.println("Mulitiplying  2 numbers 20000 times took " + ((System.currentTimeMillis()-startTime))+ "  milliseconds");
