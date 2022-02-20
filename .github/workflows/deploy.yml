@@ -29,5 +29,5 @@
             port: 22
             script: |
               export tomcatApps="/var/lib/tomcat9/webapps"
-              sudo cp build/libs/API-plain.war $tomcatApps/API.war
+              sudo cp ~/.github/Website-API/build/libs/API-plain.war $tomcatApps/API.war
               sudo service tomcat9 restart
