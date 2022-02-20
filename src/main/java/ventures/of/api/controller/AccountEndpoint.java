@@ -93,13 +93,6 @@ public class AccountEndpoint {
         }
     }
 
-
-    @GetMapping(value = "/stalinGay")
-    @ResponseBody
-    public String frickU(@RequestHeader("X-FORWARDED-FOR") String ip) {
-        return ip;
-    }
-
     @GetMapping(value = "/online")
     @ResponseBody
     public String getOnlineAccounts() {
