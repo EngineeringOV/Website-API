@@ -7,7 +7,7 @@
       name: "build and deploy"
       runs-on: ubuntu-latest
       steps:
-        - name: "build and deploy"
+        - name: "build"
           uses: appleboy/ssh-action@master
           with:
             host: world.of.ventures
@@ -20,6 +20,14 @@
               git pull
               echo "spring.profiles.active=dev" > src/main/resources/application.properties
               sudo ./gradlew clean build
+        - name: "deploy"
+          uses: appleboy/ssh-action@master
+          with:
+            host: world.of.ventures
+            username: ubuntu
+            key: ${{ secrets.VOW_GITHUB }}
+            port: 22
+            script: |
               export tomcatApps="/var/lib/tomcat9/webapps"
               sudo rm -rf $tomcatApps/API/
               sudo rm $tomcatApps/API.war
