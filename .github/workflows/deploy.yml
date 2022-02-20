@@ -19,7 +19,7 @@
               cd Website-API
               git pull
               echo "spring.profiles.active=dev" > src/main/resources/application.properties
-              ./gradlew clean build
+              sudo ./gradlew clean build
               export tomcatApps="/var/lib/tomcat9/webapps"
               sudo rm -rf $tomcatApps/API/
               sudo rm $tomcatApps/API.war
