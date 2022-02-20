@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = /*todo*/"aaaa.bbbb.cccc")
+@ConfigurationProperties(prefix = "custom.mail.smtp")
 public class SmtpConfiguration {
     private String host;
     private Integer port;

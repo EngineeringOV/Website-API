@@ -10,6 +10,7 @@ import javax.mail.internet.MimeMessage;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -19,12 +20,13 @@ import org.springframework.stereotype.Component;
 
 @Log4j2
 @Component
-public class RealMailNotification extends JavaMailSenderImpl {
-
-    SmtpConfiguration smtpConfiguration;
+public class MailSender extends JavaMailSenderImpl {
 
     @Autowired
-    public RealMailNotification(SmtpConfiguration smtpConfiguration) {
+    private SmtpConfiguration smtpConfiguration;
+
+    @Autowired
+    public MailSender(SmtpConfiguration smtpConfiguration) {
         this.smtpConfiguration = smtpConfiguration;
     }
 
@@ -67,8 +69,8 @@ public class RealMailNotification extends JavaMailSenderImpl {
         }
     }
 
-    private void propertiesPutIfExists(Properties properties, String key, Boolean value){
-        if(value != null){
+    private void propertiesPutIfExists(Properties properties, String key, Boolean value) {
+        if (value != null) {
             properties.put(key, value);
         }
     }
@@ -79,7 +81,6 @@ public class RealMailNotification extends JavaMailSenderImpl {
      */
     private MimeMessage createMimeMessage(String subject, String plainText, String htmlText, List<File> attachments, String from, String to)
             throws MessagingException {
-        boolean isHtml = plainText.matches(".*<[^>]+>.*");
         boolean isMultipart = attachments != null && !attachments.isEmpty();
 
         MimeMessage message = this.createMimeMessage();
@@ -88,23 +89,24 @@ public class RealMailNotification extends JavaMailSenderImpl {
         helper.setFrom(from);
         helper.setSubject(subject);
 
-        if (isHtml) {
-            helper.setText(plainText, true);
-        } else if (htmlText != null) {
+        if (plainText != null && htmlText != null) {
             helper.setText(plainText, htmlText);
-        } else {
-            helper.setText(plainText);
+            log.info("Message plain text: {}", plainText);
+            log.info("Message HTML text: {}", htmlText);
+        } else if (htmlText != null) {
+            helper.setText(htmlText, true);
+            log.info("Message HTML text: {}", htmlText);
+        } else if (plainText != null) {
+            helper.setText(plainText, false);
+            log.info("Message plain text: {}", plainText);
         }
 
-        log.debug("Message plain text: {}", plainText);
-        log.debug("Message HTML text: {}", htmlText);
-        log.debug("Message is multipart: {}", isMultipart);
-
         if (isMultipart) {
+            log.debug("Message is multipart: true");
             for (File attachment : attachments) {
                 FileSystemResource file = new FileSystemResource(attachment);
                 helper.addAttachment(attachment.getName(), file);
-                log.debug("Adding attachment: {}", attachment.getName());
+                log.info("Adding attachment: {}", attachment.getName());
             }
         }
 

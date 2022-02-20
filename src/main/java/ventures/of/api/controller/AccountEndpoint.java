@@ -1,19 +1,19 @@
 package ventures.of.api.controller;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import ventures.of.api.common.AccountRepository;
 import ventures.of.api.common.CharacterRepository;
 import ventures.of.api.model.ResponseStatus;
 import ventures.of.api.model.api.requests.CreateAccountRequest;
 import ventures.of.api.model.api.responses.CreateAccountResponse;
 import ventures.of.api.service.CaptchaService;
+import ventures.of.api.smtp.MailSender;
 import ventures.of.api.utils.CryptographyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ventures.of.api.model.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -33,16 +33,15 @@ public class AccountEndpoint {
     @Autowired
     private CaptchaService captchaService;
 
+    @Autowired
+    private MailSender mailSender;
+
     @PostMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
-    public CreateAccountResponse createAccount(@RequestBody CreateAccountRequest body) {
+    public CreateAccountResponse createAccount(@RequestBody CreateAccountRequest body, HttpServletRequest request) {
 
-        String remoteAddress =
-                ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                        .getRequest()
-                        .getRemoteAddr();
         try {
-            if (!captchaService.verifyCaptcha(body.getCaptchaToken(), remoteAddress)) {
+            if (!captchaService.verifyCaptcha(body.getCaptchaToken(), request.getRemoteAddr())) {
                 //Captcha failed but maybe don't tell the client that
                 log.debug("Failed to pass Captcha");
                 return new CreateAccountResponse(ResponseStatus.ERROR, "Failed to create account: try again later", "4");
