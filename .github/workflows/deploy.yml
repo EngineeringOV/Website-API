@@ -19,7 +19,7 @@
               cd Website-API
               git pull
               echo "spring.profiles.active=dev" > src/main/resources/application.properties
-              sudo ./gradlew clean build
+              sudo bash gradlew clean build
         - name: "deploy"
           uses: appleboy/ssh-action@master
           with:
