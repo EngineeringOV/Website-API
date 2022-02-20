@@ -29,8 +29,8 @@
             port: 22
             script: |
               export tomcatApps="/var/lib/tomcat9/webapps"
-              sudo rm -rf $tomcatApps/API/
-              sudo rm $tomcatApps/API.war
-              sleep 60
+#              sudo rm -rf $tomcatApps/API/
+#              sudo rm $tomcatApps/API.war
+#              sleep 60
               sudo cp build/libs/API-plain.war $tomcatApps/API.war
               sudo service tomcat9 restart
