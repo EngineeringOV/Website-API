@@ -17,7 +17,8 @@ public class TestingEndpoint {
         @GetMapping(value = "/2")
         @ResponseBody
         public String a(HttpServletRequest request) {
-            return request.getRemoteAddr();
+            return !request.getRemoteAddr().equals("127.0.0.1") ? request.getRemoteAddr() :  request.getHeader("X-Forwarded-For");
+            //request.getRemoteAddr();
         }
 
 }
