@@ -8,7 +8,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import ventures.of.api.model.api.requests.CaptchaSiteVerifyRequest;
 import ventures.of.api.model.api.responses.CaptchaSiteVerifyResponse;
 
 @Service
@@ -37,8 +36,9 @@ public class CaptchaService {
                 entity,
                 CaptchaSiteVerifyResponse.class,
                 false);
+
         log.info("Sent request to google to verify captcha and response was {}", response);
-        if(captchaPrivateKey.length() > 10) {
+        if(captchaPrivateKey.length() > 10 && !response.getSuccess()) {
             log.info("captchaPrivateKey is starts with {}", captchaPrivateKey.substring(0, 4));
         }
 
