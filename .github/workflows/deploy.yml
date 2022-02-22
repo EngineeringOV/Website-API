@@ -19,6 +19,7 @@
               cd Website-API
               git pull
               echo "spring.profiles.active=prod" > src/main/resources/application.properties
+              sudo rm ~/.github/Website-API/build/libs/API-plain.war
               sudo bash gradlew clean build
         - name: "deploy"
           uses: appleboy/ssh-action@master
@@ -29,7 +30,7 @@
             port: 22
             script: |
               export tomcatApps="/var/lib/tomcat9/webapps"
-              sudo rm -rf $tomcatApps/API/ ; exit 0
-              sudo rm $tomcatApps/API.war ; exit 0
+              sudo rm -rf $tomcatApps/API/
+              sudo rm $tomcatApps/API.war
               sudo service tomcat9 restart
               sudo cp ~/.github/Website-API/build/libs/API-plain.war $tomcatApps/API.war
