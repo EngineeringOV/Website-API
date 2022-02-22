@@ -17,8 +17,28 @@ public class TestingEndpoint {
         @GetMapping(value = "/2")
         @ResponseBody
         public String a(HttpServletRequest request) {
-            return !request.getRemoteAddr().equals("127.0.0.1") ? request.getRemoteAddr() :  request.getHeader("X-Forwarded-For");
-            //request.getRemoteAddr();
-        }
+                String ipAddress=request.getHeader("X-FORWARDED-FOR"); // Due Apache redirection, the real client ip-address will be in this header value
+
+                if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                    ipAddress = request.getHeader("Proxy-Client-IP");
+                }
+                if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                    ipAddress = request.getHeader("WL-Proxy-Client-IP");
+                }
+                if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                    ipAddress = request.getHeader("HTTP_CLIENT_IP");
+                }
+                if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                    ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
+                }
+                if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                    ipAddress = request.getRemoteAddr();
+                }
+                if(ipAddress.contains(",")){
+                    ipAddress=ipAddress.substring(0, ipAddress.indexOf(","));
+                }
+
+                return ipAddress;
+            }
 
 }

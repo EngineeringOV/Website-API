@@ -38,6 +38,9 @@ public class CaptchaService {
                 CaptchaSiteVerifyResponse.class,
                 false);
         log.info("Sent request to google to verify captcha and response was {}", response);
+        if("NOT_SET".equals(captchaPrivateKey)) {
+            log.info("captchaPrivateKey is the dev value = \"NOT_SET\"");
+        }
 
         return response.getSuccess();
     }
