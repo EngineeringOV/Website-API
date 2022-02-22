@@ -11,34 +11,21 @@ public class TestingEndpoint {
     @ResponseBody
     public String b() {
 
-        return "you found me";
+        return "you found mee";
     }
 
         @GetMapping(value = "/2")
         @ResponseBody
         public String a(HttpServletRequest request) {
-                String ipAddress=request.getHeader("X-FORWARDED-FOR"); // Due Apache redirection, the real client ip-address will be in this header value
-
-                if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-                    ipAddress = request.getHeader("Proxy-Client-IP");
-                }
-                if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-                    ipAddress = request.getHeader("WL-Proxy-Client-IP");
-                }
-                if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-                    ipAddress = request.getHeader("HTTP_CLIENT_IP");
-                }
-                if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-                    ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
-                }
-                if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-                    ipAddress = request.getRemoteAddr();
-                }
-                if(ipAddress.contains(",")){
-                    ipAddress=ipAddress.substring(0, ipAddress.indexOf(","));
-                }
-
-                return ipAddress;
+        StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("Proxy-Client-IP = " + request.getHeader("Proxy-Client-IP"));
+            stringBuilder.append("WL-Proxy-Client-IP = " + request.getHeader("WL-Proxy-Client-IP"));
+            stringBuilder.append("X-FORWARDED-FOR = " + request.getHeader("X-FORWARDED-FOR"));
+            stringBuilder.append("HTTP_CLIENT_IP = " + request.getHeader("HTTP_CLIENT_IP"));
+            stringBuilder.append("HTTP_X_FORWARDED_FOR = " + request.getHeader("HTTP_X_FORWARDED_FOR"));
+            stringBuilder.append("request.getRemoteAddr() = " + request.getRemoteAddr());
+            stringBuilder.append("HTTP_X_FORWARDED_FOR = " + request.getHeader("HTTP_X_FORWARDED_FOR"));
+                return stringBuilder.toString();
             }
 
 }
