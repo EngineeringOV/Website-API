@@ -4,7 +4,7 @@
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
-import ventures.of.api.model.Character;
+import ventures.of.api.model.db.Character;
 
 @Repository
 public interface CaptchaChallangeRepository extends JpaRepository<Character, String>, JpaSpecificationExecutor<Character> {
