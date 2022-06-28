@@ -245,12 +245,5 @@ public class Character {
 
     @Column(name = "deleteDate")
     private int deleteDate;
-
-
-    /*
-    @Enumerated(EnumType.STRING)
-    @Column(name = "process_status")
-    private status processStatus = status.UPLOADED;
-
-     */
+    
 }
