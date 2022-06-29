@@ -1,6 +1,7 @@
 package ventures.of.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,10 +10,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.client.RestTemplate;
+import ventures.of.api.smtp.SmtpConfiguration;
+
+import java.util.Properties;
 
 @SpringBootApplication
 public class ApiApplication extends SpringBootServletInitializer /*Needed to be used with an external tomcat instance*/{
 
+	@Autowired
+	SmtpConfiguration smtpConfiguration;
 
 	@Bean
 	public RestTemplate restTemplate() {
@@ -25,7 +31,24 @@ public class ApiApplication extends SpringBootServletInitializer /*Needed to be 
 
 	@Bean
 	public JavaMailSender javaMailSender() {
-		return new JavaMailSenderImpl();
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+
+		mailSender.setUsername(smtpConfiguration.getUser());
+		mailSender.setPassword(smtpConfiguration.getPassword());
+		mailSender.setHost(smtpConfiguration.getPassword());
+		mailSender.setDefaultEncoding("UTF-8");
+		Properties pros = new Properties();
+		pros.put("mail.smtp.auth", smtpConfiguration.getAuth());
+		pros.put("mail.smtp.timeout", 25000);
+		pros.put("mail.smtp.port", smtpConfiguration.getPort());
+		pros.put("mail.smtp.socketFactory.port", smtpConfiguration.getPort());
+		pros.put("mail.smtp.socketFactory.fallback", false);
+		if (smtpConfiguration.getSsl()) {
+			pros.put("mail.smtp.socketFactory.port = 465", 465);
+			pros.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		}
+		mailSender.setJavaMailProperties(pros);
+		return mailSender;
 	}
 
 	@SuppressWarnings("java:S3011")
