@@ -63,6 +63,7 @@ public class MailSender extends JavaMailSenderImpl {
     public void send(String subject, String plainText, String htmlText, List<File> attachments, String from, String to) {
         try {
             MimeMessage message = createMimeMessage(subject, plainText, htmlText, attachments, from, to);
+            log.info("Sending mail");
             this.send(message);
         } catch (MailException | MessagingException ex) {
             log.warn("E-mail failed!", ex);
