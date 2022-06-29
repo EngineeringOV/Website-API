@@ -30,7 +30,7 @@ public class ApiApplication extends SpringBootServletInitializer /*Needed to be 
 	}
 
 	@Bean
-	public JavaMailSender javaMailSender() {
+	public JavaMailSenderImpl javaMailSenderImpl() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
 		mailSender.setUsername(smtpConfiguration.getUser());
@@ -43,10 +43,8 @@ public class ApiApplication extends SpringBootServletInitializer /*Needed to be 
 		pros.put("mail.smtp.port", smtpConfiguration.getPort());
 		pros.put("mail.smtp.socketFactory.port", smtpConfiguration.getPort());
 		pros.put("mail.smtp.socketFactory.fallback", false);
-		if (smtpConfiguration.getSsl()) {
 			pros.put("mail.smtp.socketFactory.port = 465", 465);
 			pros.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		}
 		mailSender.setJavaMailProperties(pros);
 		return mailSender;
 	}

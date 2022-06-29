@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,7 @@ public class TestingEndpoint {
 
 
     @Autowired
-    private JavaMailSender javaMailSender;
+    private JavaMailSenderImpl javaMailSender;
 
     void sendEmail(String[] to) {
 
