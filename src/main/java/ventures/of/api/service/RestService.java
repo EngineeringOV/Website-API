@@ -21,7 +21,7 @@ public class RestService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public  <E, T> T restCallToURL(String url, HttpMethod httpMethod, HttpEntity<E> entity, Class<T> clazz, boolean cleanWhitespaces) {
+    public  <E, C> C restCallToURL(String url, HttpMethod httpMethod, HttpEntity<E> entity, Class<C> clazz, boolean cleanWhitespaces) {
         try {
             String response = restTemplate.exchange(url, httpMethod, entity, String.class).getBody();
             if(cleanWhitespaces) {
