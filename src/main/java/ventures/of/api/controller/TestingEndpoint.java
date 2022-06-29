@@ -16,7 +16,7 @@ public class TestingEndpoint {
     @GetMapping(value = "")
     @ResponseBody
     public String b() {
-        mailSender.send("fuck you", "ok im sorry", null, null, "cs.world.of.ventures", "alex.havlund@gmail.com");
+        mailSender.send("fuck you", "ok im sorry", null, null, "cs.world@of.ventures", "alex.havlund@gmail.com");
         return "you found mee";
     }
 
@@ -44,9 +44,10 @@ public class TestingEndpoint {
     @ResponseBody
     public String b(HttpServletRequest request) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("X-Real-IP = " + request.getHeader("X-Real-IP"));
+        stringBuilder.append("X-Forwarded-Host = " + request.getHeader("X-Real-IP"));
         stringBuilder.append("\n");
-        stringBuilder.append("X-Forwarded-For = " + request.getHeader("X-Forwarded-For"));
+        stringBuilder.append("X-Forwarded-Server = " + request.getHeader("X-Forwarded-For"));
+        System.out.println("request.getRemoteAddr() = " + request.getRemoteAddr());
         return stringBuilder.toString();
     }
 
