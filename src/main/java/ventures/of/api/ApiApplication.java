@@ -35,7 +35,7 @@ public class ApiApplication extends SpringBootServletInitializer /*Needed to be 
 
 		mailSender.setUsername(smtpConfiguration.getUser());
 		mailSender.setPassword(smtpConfiguration.getPassword());
-		mailSender.setHost(smtpConfiguration.getPassword());
+		mailSender.setHost(smtpConfiguration.getHost());
 		mailSender.setDefaultEncoding("UTF-8");
 		Properties pros = new Properties();
 		pros.put("mail.smtp.auth", smtpConfiguration.getAuth());
