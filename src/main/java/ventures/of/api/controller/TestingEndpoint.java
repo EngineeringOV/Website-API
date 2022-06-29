@@ -21,7 +21,7 @@ public class TestingEndpoint {
     void sendEmail(String[] to) {
 
         SimpleMailMessage msg = new SimpleMailMessage();
-
+        msg.setFrom("cs.world@of.ventures");
         msg.setTo(to);
         msg.setSubject("Testing from Spring Boot");
         msg.setText("Hello World \n Spring Boot Email");
