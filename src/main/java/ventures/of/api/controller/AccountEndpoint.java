@@ -8,7 +8,6 @@ import ventures.of.api.model.api.requests.CreateAccountRequest;
 import ventures.of.api.model.api.responses.CreateAccountResponse;
 import ventures.of.api.model.db.Account;
 import ventures.of.api.service.CaptchaService;
-import ventures.of.api.smtp.MailSender;
 import ventures.of.api.utils.CryptographyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +33,6 @@ public class AccountEndpoint {
     @Autowired
     private CaptchaService captchaService;
 
-    @Autowired
-    private MailSender mailSender;
 
     @PostMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody

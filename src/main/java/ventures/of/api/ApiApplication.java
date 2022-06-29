@@ -6,6 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
@@ -19,6 +21,11 @@ public class ApiApplication extends SpringBootServletInitializer /*Needed to be 
 	@Bean
 	public ObjectMapper objectMapper() {
 		return new ObjectMapper();
+	}
+
+	@Bean
+	public JavaMailSender javaMailSender() {
+		return new JavaMailSenderImpl();
 	}
 
 	@SuppressWarnings("java:S3011")
