@@ -17,7 +17,7 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "account_reset_request", schema="acore_characters", catalog = "acore_characters")
+@Table(name = "account_reset_request", schema="acore_custom", catalog = "acore_custom")
 public class AccountResetRequest {
     public AccountResetRequest(String email) {
         this.email = email;
