@@ -130,8 +130,9 @@ public class AccountEndpoint {
 
         // create database entry for allowing Password change
         AccountResetRequest resetAccountRequest = new AccountResetRequest(account.getEmail(), ipAddress);
+        resetAccountRequest.setValidRequest(true);
         accountResetRequestRepository.save(resetAccountRequest);
-        mailService.sendEmail("cs.world@of.ventures", requestData.getEmail(), "Password reset", StringUtils.buildResetAccountUrl(account.getUsername(), resetAccountRequest.getUuid()));
+        mailService.sendEmail("cs.world@of.ventures", requestData.getEmail(), "Password reset", StringUtils.buildResetAccountUrl(account.getEmail(), resetAccountRequest.getUuid()));
 
         // wait for user to confirm change by clicking link to /confirmPasswordChange
         return new CreateAccountResponse(ResponseStatus.SUCCESS, "SUCCESS", "0");

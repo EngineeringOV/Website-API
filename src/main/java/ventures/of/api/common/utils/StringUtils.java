@@ -56,10 +56,10 @@ public class StringUtils {
         System.out.print(ANSI_RESET);
     }
 
-    public static String buildResetAccountUrl(String username, String uuid) {
+    public static String buildResetAccountUrl(String email, String uuid) {
         StringBuilder sb = new StringBuilder();
-        sb.append("https://world.of.ventures/confirmPasswordChange.html?username=")
-                .append(username)
+        sb.append("https://world.of.ventures/confirmPasswordChange.html?email=")
+                .append(email)
                 .append("&uuid=")
                 .append(uuid);
         return sb.toString();
