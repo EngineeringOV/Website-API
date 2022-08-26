@@ -1,4 +1,4 @@
-package ventures.of.api.utils;
+package ventures.of.api.common.utils;
 
 import org.dfdeshom.math.GMP;
 import ventures.of.api.model.WowCryptoInfo;
@@ -7,15 +7,15 @@ import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-import static ventures.of.api.utils.ByteUtils.asSha1;
-import static ventures.of.api.utils.ByteUtils.reverseEndianes;
+import static ventures.of.api.common.utils.ByteUtils.asSha1;
+import static ventures.of.api.common.utils.ByteUtils.reverseEndianess;
 
 public class CryptographyUtils {
 
 
     public static WowCryptoInfo calculateVerifier(String username, String password) throws NoSuchAlgorithmException {
 
-        //Setting wow cryptographic constants
+        //Magic numbers are from WOWs cryptographic constants
         GMP gGmp = new GMP(7);
         GMP nGmp = new GMP();
         nGmp.fromString("894B645E89E1535BBDAD5B8B290650530801B18EBFBF5E8FAB3C82872A3E9BB7", 16);
@@ -33,7 +33,7 @@ public class CryptographyUtils {
         System.arraycopy(salt, 0, prehash2, 0, salt.length);
         System.arraycopy(hash1, 0, prehash2, salt.length, hash1.length);
         // reverse endianness to be true to PHP code
-        byte[] hash2 = reverseEndianes(asSha1(prehash2));
+        byte[] hash2 = reverseEndianess(asSha1(prehash2));
         GMP hash2AsGMP = new GMP();
         hash2AsGMP.fromSignedMagnitude(hash2, false);
 
@@ -53,5 +53,12 @@ public class CryptographyUtils {
 
         return new WowCryptoInfo(salt, verifierAsBytes);
     }
+    public static boolean validatePassword(String username, String password, WowCryptoInfo dbCryptoInfo) throws NoSuchAlgorithmException {
+        WowCryptoInfo wowCryptoInfo = CryptographyUtils.calculateVerifier(username, password);
+        return wowCryptoInfo.equals(dbCryptoInfo);
+    }
 
+    public static String reverseHash(Byte[] salt, Byte[] verifier) throws NoSuchAlgorithmException {
+        return "";
+    }
 }

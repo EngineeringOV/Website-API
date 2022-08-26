@@ -1,9 +1,10 @@
-package ventures.of.api.utils;
+package ventures.of.api.common.utils;
 
 import java.util.Arrays;
 
 public class StringUtils {
-    private StringUtils(){}
+    private StringUtils() {
+    }
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -19,14 +20,15 @@ public class StringUtils {
         return cs == null || cs.length() == 0;
     }
 
-    public static String nullSafeString(String str){
+    public static String nullSafeString(String str) {
         return isEmpty(str) ? str : "";
     }
-    public static String[] nullSafeString(String... str){
+
+    public static String[] nullSafeString(String... str) {
         return (String[]) Arrays.stream(str).map(StringUtils::nullSafeString).toArray();
     }
 
-    public static boolean doesNotContainEmptyOrNull(String... strings){
+    public static boolean doesNotContainEmptyOrNull(String... strings) {
         return Arrays.stream(strings).noneMatch(StringUtils::isEmpty);
     }
 
@@ -52,6 +54,15 @@ public class StringUtils {
             System.out.println(matchStringLength("vs =", nameEquals) + expected + "\n");
         }
         System.out.print(ANSI_RESET);
+    }
+
+    public static String buildResetAccountUrl(String username, String uuid) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("https://world.of.ventures/confirmPasswordChange.html?username=")
+                .append(username)
+                .append("&uuid=")
+                .append(uuid);
+        return sb.toString();
     }
 
 }

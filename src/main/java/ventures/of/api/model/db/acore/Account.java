@@ -1,4 +1,4 @@
-package ventures.of.api.model.db;
+package ventures.of.api.model.db.acore;
 
 import lombok.Data;
 import org.hibernate.annotations.Type;

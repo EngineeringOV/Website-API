@@ -2,10 +2,8 @@ package ventures.of.api.controller;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.bind.annotation.*;
+import ventures.of.api.common.smtp.MailService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,27 +12,14 @@ import javax.servlet.http.HttpServletRequest;
 @Log4j2
 public class TestingEndpoint {
 
-
     @Autowired
-    private JavaMailSenderImpl javaMailSender;
-
-    void sendEmail(String[] to) {
-
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setFrom("cs.world@of.ventures");
-        msg.setTo(to);
-        msg.setSubject("Testing from Spring Boot");
-        msg.setText("Hello World \n Spring Boot Email");
-
-        javaMailSender.send(msg);
-
-    }
+    MailService mailService;
 
     @GetMapping(value = "")
     @ResponseBody
     public String b() {
         log.info("before mail");
-        sendEmail(new String[]{"alex.havlund@gmail.com"});
+        mailService.sendEmail(mailService.CUSTOMER_SUPPORT, "alex.havlund@gmail.com", "Shalom", "<h3>Hello World!</h3>");
         log.info("after mail");
         return "you found mee";
     }

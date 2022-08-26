@@ -1,4 +1,4 @@
-package ventures.of.api.smtp;
+package ventures.of.api.common.smtp;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -6,13 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "custom.mail.smtp")
+@ConfigurationProperties(prefix = "spring.mail")
 public class SmtpConfiguration {
     private String host;
-    private Integer port;
-    private String user;
+    private String username;
     private String password;
-    private Boolean auth;
-    private Boolean stls;
-    private Boolean ssl;
+    private Integer port;
 }
