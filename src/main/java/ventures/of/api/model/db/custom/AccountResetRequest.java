@@ -24,7 +24,8 @@ public class AccountResetRequest {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
     @Column(name = "uuid")
     private String uuid;
 
