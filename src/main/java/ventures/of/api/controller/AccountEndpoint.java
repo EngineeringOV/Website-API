@@ -8,6 +8,7 @@ import ventures.of.api.common.custom.AccountResetRequestRepository;
 import ventures.of.api.model.ResponseStatus;
 import ventures.of.api.model.api.requests.ConfirmResetAccountRequest;
 import ventures.of.api.model.api.requests.CreateAccountRequest;
+import ventures.of.api.model.api.requests.ResetAccountRequest;
 import ventures.of.api.model.api.responses.CreateAccountResponse;
 import ventures.of.api.model.db.acore.Account;
 import ventures.of.api.model.db.custom.AccountResetRequest;
@@ -112,7 +113,7 @@ public class AccountEndpoint {
 
     @PostMapping(value = "/recover", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
-    public CreateAccountResponse forgotPassword(@RequestBody CreateAccountRequest requestData, HttpServletRequest request) {
+    public CreateAccountResponse forgotPassword(@RequestBody ResetAccountRequest requestData, HttpServletRequest request) {
         Account account = accountRepository.findByEmail(requestData.getEmail());
         String ipAddress = request.getHeader("X-Forwarded-For");
         if (account == null) {
