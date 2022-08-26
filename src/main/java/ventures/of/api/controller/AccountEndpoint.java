@@ -146,6 +146,7 @@ public class AccountEndpoint {
         // validate
         ArrayList<AccountResetRequest> accountResetRequest =
                 accountResetRequestRepository.findByUuidAndEmailAndValidRequestIsTrue(requestData.getUuid(), requestData.getEmail());
+        log.info("Size of returned DB list. {}, account null: {}", accountResetRequest.size(), account == null);
         if (!accountResetRequest.isEmpty() && account != null) {
             accountResetRequest.forEach(e -> {
                 e.setValidRequest(false);
