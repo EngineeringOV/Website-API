@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public interface AccountResetRequestRepository extends JpaRepository<AccountResetRequest, String>, JpaSpecificationExecutor<AccountResetRequest> {
 
     ArrayList<AccountResetRequest> findByUuidAndEmailAndValidRequestIsTrue(String uuid, String email);
-    int countByIpAddressAndCreatedAtAfter(String ipAddress, LocalDateTime createdAt);
+    long countByIpAddressAndCreatedAtAfter(String ipAddress, LocalDateTime createdAt);
 
 
 }

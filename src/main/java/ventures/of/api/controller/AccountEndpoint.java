@@ -115,10 +115,13 @@ public class AccountEndpoint {
     public CreateAccountResponse forgotPassword(@RequestBody CreateAccountRequest requestData, HttpServletRequest request) {
         Account account = accountRepository.findByEmail(requestData.getEmail());
         String ipAddress = request.getHeader("X-Forwarded-For");
-        if (account == null || ipNotBlacklisted(ipAddress)) {
+        if (account == null) {
             return new CreateAccountResponse(ResponseStatus.ERROR, "FAILURE", "1");
         }
-        if (!captchaService.verifyCaptcha(requestData.getCaptchaToken(), ipAddress)) {
+        else if (ipBlacklisted(ipAddress)) {
+            return new CreateAccountResponse(ResponseStatus.ERROR, "FAILURE", "2");
+        }
+        else if (!captchaService.verifyCaptcha(requestData.getCaptchaToken(), ipAddress)) {
             //Captcha failed but maybe don't tell the client that
             log.debug("Failed to pass Captcha to recover account");
             return new CreateAccountResponse(ResponseStatus.ERROR, "FAILURE: try again later", "4");
@@ -141,13 +144,12 @@ public class AccountEndpoint {
         // validate
         ArrayList<AccountResetRequest> accountResetRequest =
                 accountResetRequestRepository.findByUuidAndEmailAndValidRequestIsTrue(requestData.getUuid(), requestData.getEmail());
-        if(!accountResetRequest.isEmpty() && account != null) {
-            accountResetRequest.forEach(e->{
+        if (!accountResetRequest.isEmpty() && account != null) {
+            accountResetRequest.forEach(e -> {
                 e.setValidRequest(false);
                 accountResetRequestRepository.save(e);
             });
-        }
-        else {
+        } else {
             return new CreateAccountResponse(ResponseStatus.ERROR, "FAILURE", "1");
         }
 
@@ -170,8 +172,7 @@ public class AccountEndpoint {
         binder.setDisallowedFields(blackList);
     }
 
-    public boolean ipNotBlacklisted(String ip) {
-        return accountResetRequestRepository.countByIpAddressAndCreatedAtAfter(ip, LocalDateTime.now().minusDays(1
-        )) > 3;
+    public boolean ipBlacklisted(String ip) {
+        return accountResetRequestRepository.countByIpAddressAndCreatedAtAfter(ip, LocalDateTime.now().minusDays(1)) > 3;
     }
 }
