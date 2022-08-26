@@ -140,13 +140,12 @@ public class AccountEndpoint {
 
     @PostMapping(value = "/confirmPasswordChange", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
-    public CreateAccountResponse confirmPasswordChange(ConfirmResetAccountRequest requestData, HttpServletRequest request) throws NoSuchAlgorithmException {
+    public CreateAccountResponse confirmPasswordChange(@RequestBody ConfirmResetAccountRequest requestData, HttpServletRequest request) throws NoSuchAlgorithmException {
         Account account = accountRepository.findByEmail(requestData.getEmail());
 
         // validate
         ArrayList<AccountResetRequest> accountResetRequest =
                 accountResetRequestRepository.findByUuidAndEmailAndValidRequestIsTrue(requestData.getUuid(), requestData.getEmail());
-        log.info("Size of returned DB list. {}, account null: {}", accountResetRequest.size(), account == null);
         if (!accountResetRequest.isEmpty() && account != null) {
             accountResetRequest.forEach(e -> {
                 e.setValidRequest(false);
