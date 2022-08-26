@@ -42,4 +42,9 @@ public class AccountResetRequest {
     @Column(name = "valid_request", columnDefinition = "TINYINT")
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean validRequest = false;
+
+    public AccountResetRequest(String email, String ipAddress) {
+        this.email = email;
+        this.ipAddress = ipAddress;
+    }
 }
