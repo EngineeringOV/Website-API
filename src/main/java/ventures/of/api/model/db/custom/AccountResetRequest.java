@@ -36,7 +36,6 @@ public class AccountResetRequest {
 
     @CreatedDate
     @Column(name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
     @Column(name = "valid_request", columnDefinition = "TINYINT")
