@@ -1,4 +1,4 @@
-package ventures.of.api.common.acore;
+package ventures.of.api.common.jpa.acore;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -9,6 +9,6 @@ import ventures.of.api.model.db.acore.Character;
 @Repository
 @RepositoryRestResource(exported = false)
 public interface CharacterRepository extends JpaRepository<Character, String>, JpaSpecificationExecutor<Character> {
-
     long countByOnlineTrue();
+//    long findByAccountUsername(String username);
 }

@@ -1,4 +1,4 @@
-package ventures.of.api.common.custom;
+package ventures.of.api.common.jpa.custom;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,9 +13,6 @@ import java.util.ArrayList;
 @Repository
 @RepositoryRestResource(exported = false)
 public interface AccountResetRequestRepository extends JpaRepository<AccountResetRequest, String>, JpaSpecificationExecutor<AccountResetRequest> {
-
     ArrayList<AccountResetRequest> findByUuidAndEmailAndValidRequestIsTrue(String uuid, String email);
     long countByIpAddressAndCreatedAtAfter(String ipAddress, LocalDateTime createdAt);
-
-
 }

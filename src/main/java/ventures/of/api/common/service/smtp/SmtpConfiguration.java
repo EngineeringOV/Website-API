@@ -1,4 +1,4 @@
-package ventures.of.api.common.smtp;
+package ventures.of.api.common.service.smtp;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

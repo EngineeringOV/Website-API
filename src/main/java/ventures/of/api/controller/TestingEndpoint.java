@@ -2,10 +2,23 @@ package ventures.of.api.controller;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import ventures.of.api.common.smtp.MailService;
+import ventures.of.api.common.jpa.acore.AccountRepository;
+import ventures.of.api.common.jpa.acore.CharacterRepository;
+import ventures.of.api.common.service.smtp.MailService;
+import ventures.of.api.common.utils.CryptographyUtils;
+import ventures.of.api.model.WowCryptoInfo;
+import ventures.of.api.model.db.acore.Account;
+import ventures.of.api.model.db.acore.Character;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.DatatypeConverter;
+import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/youfoundme")
@@ -15,13 +28,44 @@ public class TestingEndpoint {
     @Autowired
     MailService mailService;
 
-    @GetMapping(value = "")
+    @Autowired
+    AccountRepository accountRepository;
+
+    @Autowired
+    CharacterRepository characterRepository;
+
+    @PostMapping(value = "/dev/1")
     @ResponseBody
     public String b() {
-        log.info("before mail");
-        mailService.sendEmail(mailService.CUSTOMER_SUPPORT, "alex.havlund@gmail.com", "Shalom", "<h3>Hello World!</h3>");
-        log.info("after mail");
+//        log.info("before mail");
+//        mailService.sendEmail(mailService.CUSTOMER_SUPPORT, "alex.havlund@gmail.com", "Shalom", "<h3>Hello World!</h3>");
+//        log.info("after mail");
         return "you found mee";
+    }
+
+
+    @GetMapping(value = "/c")
+    @ResponseBody
+    public String c(HttpServletRequest request) throws NoSuchAlgorithmException {
+        Account account = accountRepository.findByUsername("EINHARJAR2");
+        if (account == null) {
+            String username = "EINHARJAR2";
+            WowCryptoInfo wowCryptoInfo = CryptographyUtils.calculateVerifierAndSalt(username, new String(("shalom")));
+            Account newAccount = new Account(username, wowCryptoInfo, null);
+            accountRepository.save(newAccount);
+        }
+        return accountRepository.findByUsername("EINHARJAR2").toString();
+    }
+    @GetMapping(value = "/d")
+    @ResponseBody
+    public String d(HttpServletRequest request)  {
+        return accountRepository.findByUsername("EINHARJAR").getCharacters().toString();
+    }
+
+    @GetMapping(value = "/authenticated/gold")
+    @ResponseBody
+    public String getAccountGold(Authentication authentication, Principal principal) {
+        return ";)!";
     }
 
     @GetMapping(value = "/2")

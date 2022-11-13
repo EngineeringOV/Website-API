@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class ByteUtils {
-
+    private ByteUtils(){}
 
     public static byte[] asSha1(byte[] bytes) throws NoSuchAlgorithmException {
         return MessageDigest.getInstance("SHA1").digest(bytes);
@@ -18,6 +18,5 @@ public class ByteUtils {
         }
         return input;
     }
-
 
 }

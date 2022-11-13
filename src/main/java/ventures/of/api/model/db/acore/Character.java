@@ -1,6 +1,7 @@
 package ventures.of.api.model.db.acore;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -8,10 +9,12 @@ import java.time.LocalTime;
 
 @Data
 @Entity
+@NoArgsConstructor
 @Table(name = "characters", schema="acore_characters", catalog = "acore_characters")
 public class Character {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "guid")
     private int guid;
 
@@ -245,5 +248,9 @@ public class Character {
 
     @Column(name = "deleteDate")
     private int deleteDate;
-    
+
+    public Character(int account, String name) {
+        this.account = account;
+        this.name = name;
+    }
 }

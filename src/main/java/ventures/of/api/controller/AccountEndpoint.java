@@ -1,34 +1,43 @@
 package ventures.of.api.controller;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.WebDataBinder;
-import ventures.of.api.common.acore.AccountRepository;
-import ventures.of.api.common.acore.CharacterRepository;
-import ventures.of.api.common.custom.AccountResetRequestRepository;
+import ventures.of.api.common.jpa.acore.AccountRepository;
+import ventures.of.api.common.jpa.acore.CharacterRepository;
+import ventures.of.api.common.jpa.custom.AccountResetRequestRepository;
+import ventures.of.api.common.utils.AccountUtils;
+import ventures.of.api.common.utils.RecruiterNotFoundException;
 import ventures.of.api.model.ResponseStatus;
 import ventures.of.api.model.api.requests.ConfirmResetAccountRequest;
 import ventures.of.api.model.api.requests.CreateAccountRequest;
 import ventures.of.api.model.api.requests.ResetAccountRequest;
 import ventures.of.api.model.api.responses.CreateAccountResponse;
 import ventures.of.api.model.db.acore.Account;
+import ventures.of.api.model.db.acore.Character;
 import ventures.of.api.model.db.custom.AccountResetRequest;
-import ventures.of.api.service.CaptchaService;
-import ventures.of.api.common.smtp.MailService;
+import ventures.of.api.common.service.captcha.CaptchaService;
+import ventures.of.api.common.service.smtp.MailService;
 import ventures.of.api.common.utils.CryptographyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ventures.of.api.model.*;
 import ventures.of.api.common.utils.StringUtils;
+import ventures.of.api.common.service.captcha.FailedCaptchaException;
+import ventures.of.api.common.service.captcha.GenericCaptchaException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static ventures.of.api.common.utils.StringUtils.isEmpty;
 
 @Log4j2
 @RestController
@@ -48,67 +57,40 @@ public class AccountEndpoint {
         this.captchaService = captchaService;
         this.mailService = mailService;
     }
-
     @PostMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
     public CreateAccountResponse createAccount(@RequestBody CreateAccountRequest body, HttpServletRequest request) {
+        //verify captcha
         try {
-            if (!captchaService.verifyCaptcha(body.getCaptchaToken(), request.getHeader("X-Real-IP"))) {
-                //Captcha failed but maybe don't tell the client that
-                log.debug("Failed to pass Captcha");
-                return new CreateAccountResponse(ResponseStatus.ERROR, "Failed to create account: try again later", "4");
-            }
-        } catch (Exception e) {
-            return new CreateAccountResponse(ResponseStatus.ERROR, "Failed to create account: try again later", "5");
+            captchaService.throwOnFailedCaptcha(body.getCaptchaToken(), request.getHeader("X-Real-IP"));
+        } catch (FailedCaptchaException | GenericCaptchaException e) {
+            return new CreateAccountResponse(ResponseStatus.ERROR, "Failed to create account: try again later", "4");
         }
 
-        String email = body.getEmail();
-        String username = body.getUsername().toUpperCase();
-        char[] passwordBase64 = body.getPasswordBase64();
+        //verify recruiter
         String recruiterName = body.getRecruiterName();
-        int recruiterId = 0;
-        if (!isEmpty(recruiterName)) {
-            Account recruiterAccount = accountRepository.findByUsername(recruiterName);
-            if (recruiterAccount == null) {
-                return new CreateAccountResponse(ResponseStatus.ERROR, "Recruiter doesn't exist", "1");
-            }
-            recruiterId = recruiterAccount.getId();
-        }
-
-        if (isEmpty(email) && email.contains("@") && email.contains(".")) {
-            log.info("Missing parameter: \"email\" required for account creation");
-            return new CreateAccountResponse(ResponseStatus.ERROR, "Missing parameter: \"email\" required for account creation ", "1");
-        } else if (isEmpty(username)) {
-            log.info("Missing parameter: \"username\" required for account creation ");
-            return new CreateAccountResponse(ResponseStatus.ERROR, "Missing parameter: \"username\" required for account creation ", "1");
-        } else if (isEmpty(new String(passwordBase64))) {
-            log.info("Missing parameter: \"password\" required for account creation");
-            return new CreateAccountResponse(ResponseStatus.ERROR, "Missing parameter: \"password\" required for account creation ", "1");
-        }
-
+        int recruiterId;
         try {
-            if (accountRepository.findByUsername(username) != null) {
-                return new CreateAccountResponse(ResponseStatus.ERROR, "Username already in use", "3");
-            } else if (accountRepository.findByEmail(email) != null) {
-                return new CreateAccountResponse(ResponseStatus.ERROR, "Email already in use", "3");
-            } else {
-                WowCryptoInfo wowCryptoInfo = CryptographyUtils.calculateVerifier(username, new String(DatatypeConverter.parseBase64Binary(new String(passwordBase64))));
-                Account newAccount = new Account(username, wowCryptoInfo.getSalt(), wowCryptoInfo.getVerifier(), email);
-                newAccount.setRecruiter(recruiterId);
-                accountRepository.save(newAccount);
-                return new CreateAccountResponse(ResponseStatus.SUCCESS, "Account created", "0");
-            }
-        } catch (Exception e) {
-            log.info("Failed to create account, Exception below:", e);
-            //todo Add more specific execption handling and error codes in the future
-            return new CreateAccountResponse(ResponseStatus.ERROR, "Failed to create account: try again later", "1");
+            recruiterId = AccountUtils.getRecruiterId(recruiterName, accountRepository);
+        } catch (RecruiterNotFoundException e) {
+            return new CreateAccountResponse(ResponseStatus.ERROR, "Recruiter doesn't exist", "1");
         }
+
+        return AccountUtils.createAccount(body.getEmail(), body.getUsername().toUpperCase(), body.getPasswordBase64(), recruiterId, accountRepository);
     }
 
     @GetMapping(value = "/online")
     @ResponseBody
     public String getOnlineAccounts() {
         return String.valueOf(characterRepository.countByOnlineTrue());
+    }
+
+    @GetMapping(value = "/authenticated/gold")
+    @ResponseBody
+    public String getAccountGold(Authentication authentication, Principal principal) {
+//        Set<Character> characterList = accountRepository.findByUsername(authentication.getName()).getCharacters();
+//        return String.valueOf(characterList.stream().mapToLong(Character::getMoney).sum());
+        return String.valueOf(authentication);
     }
 
     @PostMapping(value = "/recover", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -122,9 +104,9 @@ public class AccountEndpoint {
         else if (ipBlacklisted(ipAddress)) {
             return new CreateAccountResponse(ResponseStatus.ERROR, "FAILURE", "2");
         }
-        else if (!captchaService.verifyCaptcha(requestData.getCaptchaToken(), ipAddress)) {
-            //Captcha failed but maybe don't tell the client that
-            log.debug("Failed to pass Captcha to recover account");
+        try {
+            captchaService.throwOnFailedCaptcha(requestData.getCaptchaToken(), request.getHeader("X-Real-IP"));
+        } catch (FailedCaptchaException | GenericCaptchaException e) {
             return new CreateAccountResponse(ResponseStatus.ERROR, "FAILURE: try again later", "4");
         }
 
@@ -156,7 +138,7 @@ public class AccountEndpoint {
         }
 
         // change password
-        WowCryptoInfo wowCryptoInfo = CryptographyUtils.calculateVerifier(account.getUsername(), new String(DatatypeConverter.parseBase64Binary(new String(requestData.getPasswordBase64()))));
+        WowCryptoInfo wowCryptoInfo = CryptographyUtils.calculateVerifierAndSalt(account.getUsername(), new String(DatatypeConverter.parseBase64Binary(new String(requestData.getPasswordBase64()))));
         account.setSalt(wowCryptoInfo.getSalt());
         account.setVerifier(wowCryptoInfo.getVerifier());
         accountRepository.save(account);
@@ -175,6 +157,8 @@ public class AccountEndpoint {
     }
 
     public boolean ipBlacklisted(String ip) {
+
+        //todo add real blacklisting
         return accountResetRequestRepository.countByIpAddressAndCreatedAtAfter(ip, LocalDateTime.now().minusDays(1)) > 3;
     }
 }

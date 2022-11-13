@@ -8,9 +8,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.client.RestTemplate;
-import ventures.of.api.common.smtp.SmtpConfiguration;
-
-import java.util.Properties;
+import ventures.of.api.common.service.smtp.SmtpConfiguration;
+import ventures.of.api.common.security.SRP6PasswordEncoder;
 
 @SpringBootApplication
 public class ApiApplication extends SpringBootServletInitializer /*Needed to be used with an external tomcat instance*/{
@@ -19,40 +18,30 @@ public class ApiApplication extends SpringBootServletInitializer /*Needed to be 
 	SmtpConfiguration smtpConfiguration;
 
 	@Bean
-	public RestTemplate restTemplate() {
+	SRP6PasswordEncoder srp6Passwordencoder() { return new SRP6PasswordEncoder();}
+	@Bean
+	RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
 	@Bean
-	public ObjectMapper objectMapper() {
+	ObjectMapper objectMapper() {
 		return new ObjectMapper();
 	}
 
 	@Bean
 	public JavaMailSenderImpl javaMailSenderImpl() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-
 		mailSender.setUsername(smtpConfiguration.getUsername());
 		mailSender.setPassword(smtpConfiguration.getPassword());
 		mailSender.setHost(smtpConfiguration.getHost());
 		mailSender.setDefaultEncoding("UTF-8");
 
-		Properties pros = new Properties();
-		/*
-		pros.put("mail.smtp.auth", "true");
-		pros.put("mail.smtp.timeout", 25000);
-		pros.put("mail.smtp.port", smtpConfiguration.getPort());
-		pros.put("mail.smtp.socketFactory.port", smtpConfiguration.getPort());
-		pros.put("mail.smtp.socketFactory.fallback", false);
-//		pros.put("mail.smtp.socketFactory.port", smtpConfiguration.getPort());
-		pros.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");*/
-		mailSender.setJavaMailProperties(pros);
 		return mailSender;
 	}
 
 	@SuppressWarnings("java:S3011")
 	public static void main(String[] args) {
 		SpringApplication.run(ApiApplication.class, args);
-
 	}
 
 }

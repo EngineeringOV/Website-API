@@ -4,22 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
-import org.springframework.data.annotation.CreatedDate;
-import ventures.of.api.model.db.acore.Account;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "account_reset_request", schema="acore_custom", catalog = "acore_custom")
+@Table(name = "account_reset_request", schema="acore_custom", catalog="acore_custom")
 public class AccountResetRequest {
+
     public AccountResetRequest(String email) {
         this.email = email;
     }
@@ -27,7 +24,7 @@ public class AccountResetRequest {
     @Id
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid")
-    @Column(name = "uuid")
+    @Column(name = "`uuid`")
     private String uuid;
 
     @Column(name = "email")

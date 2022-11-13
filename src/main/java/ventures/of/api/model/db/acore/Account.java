@@ -1,18 +1,23 @@
 package ventures.of.api.model.db.acore;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
+import ventures.of.api.model.WowCryptoInfo;
 
 import javax.persistence.*;
-
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Set;
 
-import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
 @Entity
-@Table(name = "account", schema="acore_auth")
-public class Account {
+@Table(name = "account", schema="acore_auth", catalog="acore_auth")
+@NoArgsConstructor
+public class Account implements Serializable {
+    private static final long serialVersionUID = 2405172042350251807L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -35,7 +40,7 @@ public class Account {
 
     @Column(name = "totp_secret")
     @Type(type = "org.hibernate.type.BinaryType")
-    private byte[] totpSecret = null;;
+    private byte[] totpSecret = null;
 
     @Column(name = "email")
     private String email = "";
@@ -93,14 +98,20 @@ public class Account {
     @Column(name = "totaltime")
     private int totalTime = 0;
 
-    public Account() {
-    }
+    // These exist in their own tables
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    private AccountAccess accountAccess;
 
-    public Account(String username, byte[] salt, byte[] verifier, String email) {
+    @OneToMany(mappedBy="account")
+    private Set<Character> characters;
+
+    public Account(String username, WowCryptoInfo wowCryptoInfo, String email) {
         this.username = username;
-        this.salt = salt;
-        this.verifier = verifier;
+        this.salt = wowCryptoInfo.getSalt();
+        this.verifier = wowCryptoInfo.getVerifier();
         this.email = email;
+        this.regMail = email;
     }
 
 }

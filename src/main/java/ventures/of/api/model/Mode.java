@@ -6,5 +6,5 @@ public enum Mode {
     TEST,
     PROD;
 
-    public static final String DEFAULT_VAL = "DEFAULT";
+    public static final Mode DEFAULT_VAL = DEFAULT;
 }
