@@ -4,9 +4,9 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ventures.of.api.common.jpa.acore.AccountRepository;
+import ventures.of.api.common.jpa.repositories.acore.AccountRepository;
 import ventures.of.api.common.utils.CryptographyUtils;
-import ventures.of.api.model.db.acore.Account;
+import ventures.of.api.common.jpa.model.acore.Account;
 
 @Log4j2
 public class SRP6PasswordEncoder implements PasswordEncoder {

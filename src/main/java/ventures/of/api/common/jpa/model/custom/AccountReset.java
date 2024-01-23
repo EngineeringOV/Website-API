@@ -1,4 +1,4 @@
-package ventures.of.api.model.db.custom;
+package ventures.of.api.common.jpa.model.custom;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "account_reset_request", schema="acore_custom", catalog="acore_custom")
-public class AccountResetRequest {
+public class AccountReset {
 
-    public AccountResetRequest(String email) {
+    public AccountReset(String email) {
         this.email = email;
     }
 
@@ -41,7 +41,7 @@ public class AccountResetRequest {
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean validRequest = false;
 
-    public AccountResetRequest(String email, String ipAddress) {
+    public AccountReset(String email, String ipAddress) {
         this.email = email;
         this.ipAddress = ipAddress;
     }

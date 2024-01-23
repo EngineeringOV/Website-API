@@ -1,4 +1,4 @@
-package ventures.of.api.model.db.acore;
+package ventures.of.api.common.jpa.model.acore;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

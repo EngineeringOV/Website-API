@@ -6,8 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import ventures.of.api.common.jpa.acore.AccountRepository;
-import ventures.of.api.model.db.acore.Account;
+import ventures.of.api.common.jpa.repositories.acore.AccountRepository;
+import ventures.of.api.common.security.util.SecurityUtil;
+import ventures.of.api.common.jpa.model.acore.Account;
 
 import java.util.List;
 

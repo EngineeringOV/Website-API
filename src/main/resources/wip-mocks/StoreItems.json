@@ -1,0 +1,45 @@
+{
+    "recieved_at": 1171138681,
+    "items": [
+        {
+            "name_package": "Technomancers Welcome Package",
+            "sub_text": "Begin your adventure with extra flair",
+            "ends_at": 1303204884,
+            "classes": "[package_classes.freebie, package_classes.mount]",
+            "price": 1,
+            "price_units": "XNO",
+            "image_url": "https://overgear.com/cdn/uploads/7ed22264d9092afc810df74bc24e8faa.jpeg",
+            "id_list": [
+                "xxx",
+                "yyy"
+            ]
+        },
+        {
+            "name_package": "Golden Welcome Package",
+            "sub_text": "Begin your adventure with extra flair",
+            "ends_at": 1303204884,
+            "classes": "[package_classes.freebie, package_classes.mount]",
+            "price": 10000,
+            "price_units": "G",
+            "image_url": "https://overgear.com/cdn/uploads/7ed22264d9092afc810df74bc24e8faa.jpeg",
+            "id_list": [
+                "xxx",
+                "yyy"
+            ]
+        },
+        {
+            "name_package": "Trump Welcome Package",
+            "sub_text": "Begin your adventure with EVEN MORE flair",
+            "ends_at": 1303204884,
+            "classes": "[package_classes.freebie, package_classes.mount]",
+            "price": 1,
+            "price_units": "USD",
+            "image_url": "https://overgear.com/cdn/uploads/7ed22264d9092afc810df74bc24e8faa.jpeg",
+            "id_list": [
+                "yyy",
+                "zzz"
+            ]
+        }
+
+    ]
+}

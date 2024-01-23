@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import ventures.of.api.common.jpa.acore.AccountRepository;
-import ventures.of.api.common.jpa.acore.CharacterRepository;
+import ventures.of.api.common.jpa.repositories.acore.AccountRepository;
+import ventures.of.api.common.jpa.repositories.acore.CharacterRepository;
 import ventures.of.api.common.utils.CryptographyUtils;
 import ventures.of.api.model.WowCryptoInfo;
-import ventures.of.api.model.db.acore.Account;
-import ventures.of.api.model.db.acore.Character;
+import ventures.of.api.common.jpa.model.acore.Account;
+import ventures.of.api.common.jpa.model.acore.Character;
 
 import java.security.NoSuchAlgorithmException;
 

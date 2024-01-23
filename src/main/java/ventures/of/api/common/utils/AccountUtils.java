@@ -1,11 +1,11 @@
 package ventures.of.api.common.utils;
 
 import lombok.extern.log4j.Log4j2;
-import ventures.of.api.common.jpa.acore.AccountRepository;
+import ventures.of.api.common.jpa.repositories.acore.AccountRepository;
 import ventures.of.api.model.ResponseStatus;
 import ventures.of.api.model.WowCryptoInfo;
 import ventures.of.api.model.api.responses.CreateAccountResponse;
-import ventures.of.api.model.db.acore.Account;
+import ventures.of.api.common.jpa.model.acore.Account;
 
 import javax.xml.bind.DatatypeConverter;
 

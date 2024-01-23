@@ -2,7 +2,7 @@ package ventures.of.api.common.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ventures.of.api.model.db.acore.Account;
+import ventures.of.api.common.jpa.model.acore.Account;
 
 import java.util.Collection;
 import java.util.List;

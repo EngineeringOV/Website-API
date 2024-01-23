@@ -1,4 +1,4 @@
-package ventures.of.api.common.security;
+package ventures.of.api.common.security.util;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -6,7 +6,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import ventures.of.api.model.db.acore.Account;
+import ventures.of.api.common.security.UserDetailsImpl;
+import ventures.of.api.common.jpa.model.acore.Account;
 
 import java.util.ArrayList;
 import java.util.List;

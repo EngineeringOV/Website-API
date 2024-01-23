@@ -1,12 +1,11 @@
 package ventures.of.api.controller;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.WebDataBinder;
-import ventures.of.api.common.jpa.acore.AccountRepository;
-import ventures.of.api.common.jpa.acore.CharacterRepository;
-import ventures.of.api.common.jpa.custom.AccountResetRequestRepository;
+import ventures.of.api.common.jpa.repositories.acore.AccountRepository;
+import ventures.of.api.common.jpa.repositories.acore.CharacterRepository;
+import ventures.of.api.common.jpa.repositories.custom.AccountResetRequestRepository;
 import ventures.of.api.common.utils.AccountUtils;
 import ventures.of.api.common.utils.RecruiterNotFoundException;
 import ventures.of.api.model.ResponseStatus;
@@ -14,9 +13,8 @@ import ventures.of.api.model.api.requests.ConfirmResetAccountRequest;
 import ventures.of.api.model.api.requests.CreateAccountRequest;
 import ventures.of.api.model.api.requests.ResetAccountRequest;
 import ventures.of.api.model.api.responses.CreateAccountResponse;
-import ventures.of.api.model.db.acore.Account;
-import ventures.of.api.model.db.acore.Character;
-import ventures.of.api.model.db.custom.AccountResetRequest;
+import ventures.of.api.common.jpa.model.acore.Account;
+import ventures.of.api.common.jpa.model.custom.AccountReset;
 import ventures.of.api.common.service.captcha.CaptchaService;
 import ventures.of.api.common.service.smtp.MailService;
 import ventures.of.api.common.utils.CryptographyUtils;
@@ -34,8 +32,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -61,6 +57,7 @@ public class AccountEndpoint {
     @ResponseBody
     public CreateAccountResponse createAccount(@RequestBody CreateAccountRequest body, HttpServletRequest request) {
         //verify captcha
+        //todo should limit password and account names (not emails) to 15 chars
         try {
             captchaService.throwOnFailedCaptcha(body.getCaptchaToken(), request.getHeader("X-Real-IP"));
         } catch (FailedCaptchaException | GenericCaptchaException e) {
@@ -111,7 +108,7 @@ public class AccountEndpoint {
         }
 
         // create database entry for allowing Password change
-        AccountResetRequest resetAccountRequest = new AccountResetRequest(account.getEmail(), ipAddress);
+        AccountReset resetAccountRequest = new AccountReset(account.getEmail(), ipAddress);
         resetAccountRequest.setValidRequest(true);
         accountResetRequestRepository.save(resetAccountRequest);
         mailService.sendEmail("cs.world@of.ventures", requestData.getEmail(), "Password reset", StringUtils.buildResetAccountUrl(account.getEmail(), resetAccountRequest.getUuid()));
@@ -126,7 +123,7 @@ public class AccountEndpoint {
         Account account = accountRepository.findByEmail(requestData.getEmail());
 
         // validate
-        ArrayList<AccountResetRequest> accountResetRequest =
+        ArrayList<AccountReset> accountResetRequest =
                 accountResetRequestRepository.findByUuidAndEmailAndValidRequestIsTrue(requestData.getUuid(), requestData.getEmail());
         if (!accountResetRequest.isEmpty() && account != null) {
             accountResetRequest.forEach(e -> {

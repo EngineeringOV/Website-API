@@ -31,12 +31,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web:2.7.3'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1'
 	compileOnly 'org.projectlombok:lombok:1.18.24'
-	annotationProcessor 'org.projectlombok:lombok:1.18.22'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
 	compile fileTree(dir: 'lib/', include: '**/*.jar')
 	implementation(platform("org.apache.logging.log4j:log4j-bom:2.17.0"))
 	implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.3'
 	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.30'
 	implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
+	implementation 'uk.oczadly.karl:jnano:2.20.1'
 
 
 	// Spring testing
