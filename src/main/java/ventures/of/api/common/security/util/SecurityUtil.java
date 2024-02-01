@@ -44,14 +44,11 @@ public class SecurityUtil {
     }
 
     public static List<GrantedAuthority> getRoles(Account user) {
-        List<GrantedAuthority> roles = new ArrayList<>();
         if(user.getAccountAccess() != null) {
-            roles.add(new SimpleGrantedAuthority(user.getAccountAccess().gmLevelToString()));
-            return roles;
+            return List.of(new SimpleGrantedAuthority(user.getAccountAccess().gmLevelToString()));
         }
         else {
-            roles.add(new SimpleGrantedAuthority("ROLE_PLAYER"));
-            return roles;
+            return List.of(new SimpleGrantedAuthority("ROLE_PLAYER"));
         }
     }
 }

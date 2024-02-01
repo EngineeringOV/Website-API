@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authenticated Backend Resource</title>
+</head>
+<body>
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username">
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password">
+    </div>
+    <button onclick="fetchResource()">Fetch Resource</button>
+    <div id="response"></div>
+    <script>
+        const backendUrl = 'http://your-backend-url/resource';
+        const cookieName = 'JSESSIONID';
+
+        async function fetchResource() {
+            try {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                const response = await fetch(backendUrl, {
+                    method: 'GET',
+                    credentials: 'include', // Include cookies for authentication
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + btoa(username + ':' + password)
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('response').innerText = 'Resource: ' + JSON.stringify(data);
+                } else {
+                    document.getElementById('response').innerText = 'Error: ' + response.status;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('response').innerText = 'Error: ' + error.message;
+            }
+        }
+
+        // Check if cookie is present
+        if (document.cookie.indexOf(cookieName + '=') === -1) {
+            document.getElementById('response').innerText = 'Cookie not found';
+        } else {
+            document.getElementById('response').innerText = 'Cookie found';
+        }
+    </script>
+</body>
+</html>

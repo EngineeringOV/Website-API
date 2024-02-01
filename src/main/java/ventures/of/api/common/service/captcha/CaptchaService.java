@@ -23,38 +23,26 @@ public class CaptchaService {
     @Value("${google.captcha.verifyUrl}")
     private String siteVerifyUrl;
 
-    public boolean verifyCaptcha(String captchaToken, String ipAddress) throws GenericCaptchaException {
-        CaptchaSiteVerifyResponse response = null;
-        try {
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            body.add("secret", captchaPrivateKey);
-            body.add("response", captchaToken);
-            body.add("remoteip", ipAddress);
-            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, null);
-            response = restService.restCallToURL(
-                    siteVerifyUrl,
-                    HttpMethod.POST,
-                    entity,
-                    CaptchaSiteVerifyResponse.class,
-                    false);
+    public boolean captchaSuccessful(String captchaToken, String ipAddress) {
+        CaptchaSiteVerifyResponse response;
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("secret", captchaPrivateKey);
+        body.add("response", captchaToken);
+        body.add("remoteip", ipAddress);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, null);
+        response = restService.restCallToURL(
+                siteVerifyUrl,
+                HttpMethod.POST,
+                entity,
+                CaptchaSiteVerifyResponse.class,
+                false);
 
-            log.info("Sent request to google to verify captcha and response was {}", response);
-            if (captchaPrivateKey.length() > 10 && !response.getSuccess()) {
-                log.info("captchaPrivateKey is starts with {}", captchaPrivateKey.substring(0, 4));
-            }
-        }
-        catch (Exception e) {
-            throw new GenericCaptchaException(e);
+        log.debug("Sent request to google to verify captcha and response was {}", response);
+        if (captchaPrivateKey.length() > 10 && !response.getSuccess()) {
+            log.debug("captchaPrivateKey is starts with {}", captchaPrivateKey.substring(0, 4));
         }
 
         return response.getSuccess();
     }
-    public void throwOnFailedCaptcha(String captchaToken, String realIp) throws FailedCaptchaException, GenericCaptchaException {
-            if (!verifyCaptcha(captchaToken, realIp)) {
-                //Captcha failed but maybe don't tell the client that
-                log.debug("Failed to pass Captcha");
-                throw new FailedCaptchaException("Failed to pass Captcha");
-            }
-        }
 
 }

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import static ventures.of.api.common.utils.StringUtils.cleanWhiteSpaces;
+
 @Service
 @Log4j2
 public class RestService {
@@ -21,26 +23,19 @@ public class RestService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public  <E, C> C restCallToURL(String url, HttpMethod httpMethod, HttpEntity<E> entity, Class<C> clazz, boolean cleanWhitespaces) {
+    public <E, C> C restCallToURL(String url, HttpMethod httpMethod, HttpEntity<E> entity, Class<C> clazz, boolean cleanWhitespaces) {
         try {
             String response = restTemplate.exchange(url, httpMethod, entity, String.class).getBody();
-            if(cleanWhitespaces) {
+            if (cleanWhitespaces) {
                 response = cleanWhiteSpaces(response);
             }
             return objectMapper.readValue(response, clazz);
         } catch (org.springframework.web.client.HttpStatusCodeException e) {
-                throw new ResponseStatusException(e.getStatusCode());
+            throw new ResponseStatusException(e.getStatusCode());
         } catch (JsonProcessingException e) {
             log.error(e);
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         }
-    }
-
-    public static String cleanWhiteSpaces(String parseable) {
-        if(parseable == null) {
-            return null;
-        }
-        return parseable.replaceAll("\\s+", " ");
     }
 
 }

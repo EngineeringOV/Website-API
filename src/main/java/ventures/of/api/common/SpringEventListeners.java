@@ -2,7 +2,9 @@ package ventures.of.api.common;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Profiles;
 import org.springframework.stereotype.Component;
 import ventures.of.api.common.jpa.repositories.acore.AccountRepository;
 import ventures.of.api.common.jpa.repositories.acore.CharacterRepository;
@@ -21,11 +23,13 @@ public class SpringEventListeners {
     CharacterRepository characterRepository;
 
     @EventListener(ApplicationReadyEvent.class)
-    public void createTestAccount() throws NoSuchAlgorithmException {
-        Account account = accountRepository.findByUsername("EINHARJAR");
+    public void createTestAccount(ApplicationReadyEvent event) {
+        if (event.getApplicationContext().getEnvironment().acceptsProfiles(Profiles.of("dev"))) {
+
+        String username = "TEST";
+        Account account = accountRepository.findByUsername(username);
         if (account == null) {
-            String username = "EINHARJAR";
-            WowCryptoInfo wowCryptoInfo = CryptographyUtils.calculateVerifierAndSalt(username, ("SHALOM"));
+            WowCryptoInfo wowCryptoInfo = CryptographyUtils.calculateVerifierAndSalt(username, ("TEST"));
             Account newAccount = new Account(username, wowCryptoInfo, null);
             accountRepository.save(newAccount);
         }
@@ -36,6 +40,7 @@ public class SpringEventListeners {
         character2.setMoney(256);
         characterRepository.save(character2);
 
+        }
     }
 
 }

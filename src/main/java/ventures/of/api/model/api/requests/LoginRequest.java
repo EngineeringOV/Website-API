@@ -5,9 +5,7 @@ import lombok.Data;
 @Data
 public class LoginRequest {
     //GenericRequestData
-    String mode;
     String captchaToken;
-
     String username;
     char[] password;
 }

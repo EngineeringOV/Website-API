@@ -15,9 +15,14 @@ public class MailService {
     private final JavaMailSenderImpl javaMailSender;
 
     public MailService(@Autowired JavaMailSenderImpl javaMailSender,
-                       @Value("${custom.mail.smtp.customerSupport}") String supportEmail){
+                       @Value("${custom.mail.smtp.customerSupport}") String supportEmail) {
         this.javaMailSender = javaMailSender;
         this.CUSTOMER_SUPPORT = supportEmail;
+    }
+
+    @Async
+    public void sendEmailCustomerSupport(String to, String subject, String body) {
+        sendEmail(CUSTOMER_SUPPORT, to, subject, body);
     }
 
     @Async

@@ -33,12 +33,10 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
 	compile fileTree(dir: 'lib/', include: '**/*.jar')
-	implementation(platform("org.apache.logging.log4j:log4j-bom:2.17.0"))
+	implementation 'org.apache.logging.log4j:log4j-core:2.22.1'
 	implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.3'
 	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.30'
 	implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
-	implementation 'uk.oczadly.karl:jnano:2.20.1'
-
 
 	// Spring testing
 	testCompile('org.springframework.boot:spring-boot-starter-test:2.7.3')

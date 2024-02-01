@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BuyFromStoreRequest {
     String itemId;
-
 }

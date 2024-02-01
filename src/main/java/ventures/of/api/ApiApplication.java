@@ -39,7 +39,7 @@ public class ApiApplication extends SpringBootServletInitializer /*Needed to be 
 		return mailSender;
 	}
 
-	@SuppressWarnings("java:S3011")
+	//todo fix readme
 	public static void main(String[] args) {
 		SpringApplication.run(ApiApplication.class, args);
 	}

@@ -4,24 +4,24 @@ import org.dfdeshom.math.GMP;
 import ventures.of.api.model.WowCryptoInfo;
 
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import static ventures.of.api.common.utils.ByteUtils.asSha1;
 import static ventures.of.api.common.utils.ByteUtils.reverseEndianess;
 
 public class CryptographyUtils {
-    private CryptographyUtils(){}
+    private CryptographyUtils() {
+    }
 
-    public static WowCryptoInfo calculateVerifierAndSalt(CharSequence usernameAndPassword) throws NoSuchAlgorithmException {
+    public static WowCryptoInfo calculateVerifierAndSalt(CharSequence usernameAndPassword) {
         return calculateVerifierWithSalt(calculateSalt(), usernameAndPassword.toString().toUpperCase());
     }
 
-    public static WowCryptoInfo calculateVerifierAndSalt(CharSequence username, CharSequence password) throws NoSuchAlgorithmException {
+    public static WowCryptoInfo calculateVerifierAndSalt(CharSequence username, CharSequence password) {
         return calculateVerifierWithSalt(calculateSalt(), (username + ":" + password).toUpperCase());
     }
 
-    public static WowCryptoInfo calculateVerifierWithSalt(byte[] salt, String usernameColonPass) throws NoSuchAlgorithmException {
+    public static WowCryptoInfo calculateVerifierWithSalt(byte[] salt, String usernameColonPass) {
         byte[] hash1 = asSha1(usernameColonPass.getBytes(StandardCharsets.UTF_8));
         //First set array to salt and then append hash1 to the end of it
         byte[] prehash2 = new byte[salt.length + hash1.length];
@@ -29,7 +29,6 @@ public class CryptographyUtils {
         System.arraycopy(hash1, 0, prehash2, salt.length, hash1.length);
         // reverse endianness to be true to PHP code
         byte[] hash2 = reverseEndianess(asSha1(prehash2));
-
         byte[] verifierAsBytes = calculateVerifier(hash2);
 
         return new WowCryptoInfo(salt, verifierAsBytes);

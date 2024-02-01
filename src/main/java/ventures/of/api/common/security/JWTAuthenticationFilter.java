@@ -3,6 +3,7 @@ package ventures.of.api.common.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+    @Value("${spring.security.hmac.key}")
+    String hmacKey;
+
     private final AuthenticationManager authenticationManager;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -47,11 +51,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException {
-        //TODO FIX SECRET
         String token = JWT.create()
                 .withSubject(((UserDetailsImpl) auth.getPrincipal()).getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + (2*60*60*1000) ))
-                .sign(Algorithm.HMAC512("SECRET".getBytes()));
+                .sign(Algorithm.HMAC512(hmacKey.getBytes()));
         String body = ((UserDetailsImpl) auth.getPrincipal()).getUsername() + " " + token;
         res.getWriter().write(body);
         res.getWriter().flush();
