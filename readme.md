@@ -9,7 +9,7 @@
 - The store part and it's parts weren't tested properly, this includes creating item instance and mail etc etc.
 - Feel free to make PRs
 
-## RUNNING LOCALLY (One time setup)
+## RUNNING (One time setup)
 
 
 INSTALL SQL & GMP 
