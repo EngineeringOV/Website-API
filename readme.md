@@ -9,7 +9,17 @@
 ## RUNNING (One time setup)
 
 
-INSTALL SQL & GMP 
+0: INSTALL SQL & GMP 
+```
+sudo apt install gcc libgmp-dev
+
+wget https://download.java.net/java/GA/jdk18.0.2.1/db379da656dc47308e138f21b33976fa/1/GPL/openjdk-18.0.2.1_linux-x64_bin.tar.gz
+tar xzf openjdk-18.0.2.1_linux-x64_bin.tar.gz
+sudo mv jdk-18.0.2.1 /usr/lib/jvm/
+sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-18.0.2.1/bin/java 2
+sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-18.0.2.1/bin/javac 2
+export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
+```
 
 1: Logging into mysql
 ```bash
