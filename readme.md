@@ -9,8 +9,10 @@
 ## RUNNING (One time setup)
 
 
-0: INSTALL SQL & GMP 
+0: INSTALL SQL & GMP & Java
 ```
+sudo apt install mysql-server
+
 sudo apt install gcc libgmp-dev
 
 wget https://download.java.net/java/GA/jdk18.0.2.1/db379da656dc47308e138f21b33976fa/1/GPL/openjdk-18.0.2.1_linux-x64_bin.tar.gz
