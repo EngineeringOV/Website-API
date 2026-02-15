@@ -1,12 +1,9 @@
 # AzerothCore website backend
 
 ## NOTES
-- This project was never fully shipped.
-- Account creation should work.
-- You DO want some kind of captcha for the store
-- I make no promises that the DB looks like it is supposed too, so you will want to verify that and if you use this on a production server use a Hibernate config that verifies ONLY
-- Do a text in all files search for "FIXME" to find some things that could be improved
-- The store part and it's parts weren't tested properly, this includes creating item instance and mail etc etc.
+- Use Java 18
+- You DO want some kind of captcha
+- The store part is WIP NYI.
 - Feel free to make PRs
 
 ## RUNNING (One time setup)
