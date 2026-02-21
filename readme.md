@@ -18,13 +18,11 @@ sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-18.0.2.
 export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 ```
 
-1: INSTALL SQL & GMP & Java
+1: INSTALL SQL & GMP
 ```
 sudo apt install mysql-server
 
 sudo apt install gcc libgmp-dev
-
-
 ```
 
 2: Logging into mysql
