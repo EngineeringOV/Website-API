@@ -1,7 +1,7 @@
 package ventures.of.api.common.jpa.model.acore;
 
 import lombok.Data;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Data

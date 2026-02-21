@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 import ventures.of.api.common.jpa.model.acore.Account;
 import ventures.of.api.common.jpa.repositories.acore.AccountRepository;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {

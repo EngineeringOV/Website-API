@@ -2,9 +2,8 @@ package ventures.of.api.common.jpa.model.acore;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalTime;
 
 @Data
@@ -91,11 +90,9 @@ public class Character {
     private String taxiMask;
 
     @Column(name = "online", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean online;
 
     @Column(name = "cinematic", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean cinematic;
 
     @Column(name = "totaltime")
@@ -108,7 +105,6 @@ public class Character {
     private int logoutTime;
 
     @Column(name = "is_logout_resting", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean isLogoutResting;
 
     @Column(name = "rest_bonus")

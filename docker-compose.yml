@@ -1,0 +1,19 @@
+services:
+  api:
+    build: .
+    container_name: website-api
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_ROOT_PASSWORD=${DOCKER_DB_ROOT_PASSWORD:-password}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://ac-database:3306/acore_auth
+      - SPRING_DATASOURCE_USERNAME=spring
+      - SPRING_DATASOURCE_PASSWORD=${DOCKER_SPRING_DB_PASSWORD:-password}
+    networks:
+      - ac-network
+    restart: unless-stopped
+
+networks:
+  ac-network:
+    external: true
+    name: azerothcore-wotlk_ac-network

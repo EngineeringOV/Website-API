@@ -7,8 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ventures.of.api.common.jpa.repositories.acore.AccountRepository;
 import ventures.of.api.common.utils.CryptographyUtils;
 import ventures.of.api.common.jpa.model.acore.Account;
+import org.springframework.stereotype.Component;
 
 @Log4j2
+@Component
 public class SRP6PasswordEncoder implements PasswordEncoder {
 
     @Autowired
@@ -20,7 +22,6 @@ public class SRP6PasswordEncoder implements PasswordEncoder {
         return new String (CryptographyUtils.calculateVerifierAndSalt(usernameColonPassword.toString()).getVerifier());
     }
 
-    //todo think this needs fixing?
     @SneakyThrows
     @Override
     public boolean matches(CharSequence nameAndPass, String encodedPassword) {

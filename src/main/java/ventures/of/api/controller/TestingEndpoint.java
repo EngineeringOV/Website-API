@@ -4,18 +4,19 @@ package ventures.of.api.controller;
 //Compile with this class uncommented if you want to test REST endpoint locations
 // and client headers for your setup
 
-/*
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/youfoundme")
 @Log4j2
+@Profile("dev")
 public class TestingEndpoint {
 
     @GetMapping(value = "/2")
@@ -46,6 +47,3 @@ public class TestingEndpoint {
         return stringBuilder.toString();
     }
 }
-
-
- */

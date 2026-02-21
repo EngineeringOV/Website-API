@@ -2,10 +2,9 @@ package ventures.of.api.common.jpa.model.acore;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 import ventures.of.api.model.WowCryptoInfo;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
@@ -27,19 +26,15 @@ public class Account implements Serializable {
     private String username;
 
     @Column(name = "salt")
-    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] salt;
 
     @Column(name = "verifier")
-    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] verifier;
 
     @Column(name = "session_key")
-    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] sessionKey = null;
 
     @Column(name = "totp_secret")
-    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] totpSecret = null;
 
     @Column(name = "email")
@@ -61,7 +56,6 @@ public class Account implements Serializable {
     private int failedLogins = 0;
 
     @Column(name = "locked", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean locked = false;
 
     @Column(name = "lock_country")
@@ -71,7 +65,6 @@ public class Account implements Serializable {
     private LocalDate lastLogin = null;
 
     @Column(name = "online", columnDefinition = "INT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean online = false;
 
     @Column(name = "expansion")

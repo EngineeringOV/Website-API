@@ -22,8 +22,8 @@ import ventures.of.api.model.api.requests.ConfirmResetAccountRequest;
 import ventures.of.api.model.api.requests.CreateAccountRequest;
 import ventures.of.api.model.api.requests.ResetAccountRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.DatatypeConverter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.xml.bind.DatatypeConverter;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

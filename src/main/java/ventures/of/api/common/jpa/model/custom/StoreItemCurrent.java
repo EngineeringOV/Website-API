@@ -1,22 +1,20 @@
 package ventures.of.api.common.jpa.model.custom;
 
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
+import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 public class StoreItemCurrent {
 
 
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @GeneratedValue
+    @UuidGenerator
     @Column(name = "`uuid`")
     private String uuid;
 
     @ManyToOne
-    @Column(name = "item_base")
-    @JoinColumn(columnDefinition = "id")
+    @JoinColumn(name = "item_base", referencedColumnName = "uuid")
     public StoreItemBase itemBase;
     @Column(name = "current_price")
     public long currentPrice;

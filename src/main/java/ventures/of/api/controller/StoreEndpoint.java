@@ -11,8 +11,8 @@ import ventures.of.api.common.jpa.repositories.acore.AccountRepository;
 import ventures.of.api.common.jpa.repositories.custom.StoreItemCurrentRepository;
 import ventures.of.api.model.api.requests.BuyFromStoreRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 
@@ -50,40 +50,8 @@ public class StoreEndpoint {
         StoreItemCurrent storeItem = storeItemCurrentRepository.findById(requestData.getItemId()).orElseThrow(Exception::new);
         boolean safeToRun = !account.isOnline() && !account.isLocked();
 
-        if ("G".equalsIgnoreCase(storeItem.itemBase.priceUnits)) {
-            if (!safeToRun) {
-                throw new Exception();
-            }
-        }
-
-        int character = 0; // = request.getCharacter();
-//      StoreItem item = request.getItem();
-        long cost = storeItem.currentPrice; // = StoreItems.getItem(item).getCost();
-
         return readFromFile("wip-mocks/StoreItems.json");
     }
-
-    @GetMapping(value = "/authenticated/thisAccount", produces = APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public String thisAccount(Authentication authentication,
-                              HttpServletRequest req,
-                              HttpServletResponse res) throws Exception {
-        return "";
-
-    }
-
-    @GetMapping(value = "/test/{storeId}", produces = APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public int test(@PathVariable int storeId) {
-        return storeId;
-    }
-/*
-    @GetMapping(value = "/authenticated/deposit", produces = APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public String depositNano() throws IOException {
-        return readFromFile("wip-mocks/StoreItems.json");
-    }
-*/
 
     private String readFromFile(String fileName) throws IOException {
         File initialFile = new File("src/main/resources/" + fileName);

@@ -3,11 +3,13 @@ package ventures.of.api.common.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -15,35 +17,46 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
+
+    @Autowired
+    private AuthenticationConfiguration authenticationConfiguration;
 
     @Autowired
     private SRP6PasswordEncoder srp6PasswordEncoder;
 
-    public WebSecurityConfig(SRP6PasswordEncoder srp6PasswordEncoder) {
-        this.srp6PasswordEncoder = srp6PasswordEncoder;
-    }
 
     @Bean
-    @Override
     public UserDetailsServiceImpl userDetailsService() {
         return new UserDetailsServiceImpl();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().and().authorizeRequests()
-                .antMatchers("/**/authenticated/*").hasRole("ROLE_PLAYER")
-                .antMatchers("/**/DEV/*").hasRole("ROLE_ADMIN")
-                .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(srp6PasswordEncoder);
+        return authProvider;
     }
 
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService()).passwordEncoder(srp6PasswordEncoder);
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+                .authenticationProvider(authenticationProvider())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/**/authenticated/*").hasRole("PLAYER")
+                        .requestMatchers("/**/DEV/*").hasRole("ADMIN")
+                        .anyRequest().permitAll()
+                )
+                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER));
+        return http.build();
     }
 
     @Bean

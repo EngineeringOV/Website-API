@@ -9,16 +9,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.client.RestTemplate;
 import ventures.of.api.common.service.smtp.SmtpConfiguration;
-import ventures.of.api.common.security.SRP6PasswordEncoder;
-
 @SpringBootApplication
 public class ApiApplication extends SpringBootServletInitializer /*Needed to be used with an external tomcat instance*/{
 
 	@Autowired
 	SmtpConfiguration smtpConfiguration;
 
-	@Bean
-	SRP6PasswordEncoder srp6Passwordencoder() { return new SRP6PasswordEncoder();}
 	@Bean
 	RestTemplate restTemplate() {
 		return new RestTemplate();
