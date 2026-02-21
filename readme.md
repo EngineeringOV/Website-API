@@ -8,13 +8,8 @@
 
 ## RUNNING (One time setup)
 
-
-0: INSTALL SQL & GMP & Java
+0: INSTALL JAVA 18 (OPTIONAL)
 ```
-sudo apt install mysql-server
-
-sudo apt install gcc libgmp-dev
-
 wget https://download.java.net/java/GA/jdk18.0.2.1/db379da656dc47308e138f21b33976fa/1/GPL/openjdk-18.0.2.1_linux-x64_bin.tar.gz
 tar xzf openjdk-18.0.2.1_linux-x64_bin.tar.gz
 sudo mv jdk-18.0.2.1 /usr/lib/jvm/
@@ -23,12 +18,21 @@ sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-18.0.2.
 export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 ```
 
-1: Logging into mysql
+1: INSTALL SQL & GMP & Java
+```
+sudo apt install mysql-server
+
+sudo apt install gcc libgmp-dev
+
+
+```
+
+2: Logging into mysql
 ```bash
 sudo mysql -u root
 ```
 
-2: Creating Mysql user (Replace with your password), creates tables and setting privileges for our new user
+3: Creating Mysql user (Replace with your password), creates tables and setting privileges for our new user
 ###  Replace with your password in the first line (match it to the environment variable with the key "spring.datasource.password" in your .properties file)
 ```mysql
 CREATE USER 'spring'@'localhost' IDENTIFIED BY '!!REPLACE-ME!!';
@@ -55,7 +59,7 @@ GRANT ALL  PRIVILEGES ON acore_world.* TO 'spring'@'localhost';
 exit
 ```
 
-3: Installing GMP (From project root and assuming Debian/Ubuntu) 
+4: Installing GMP (From project root and assuming Debian/Ubuntu) 
 ```bash
 mkdir lib
 cd lib
