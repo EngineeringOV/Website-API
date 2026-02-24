@@ -25,8 +25,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import io.github.engineeringov.website.api.common.jpa.repositories.custom.AccountResetRequestRepository;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.DatatypeConverter;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Base64;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class AccountEndpoint {
     private final CharacterRepository characterRepository;
     private final AccountResetRequestRepository accountResetRequestRepository;
     private final CaptchaService captchaService;
-    private final io.github.engineeringov.website.api.common.service.smtp.EMailService EMailService;
+    private final EMailService eMailService;
     @Value("${api.customization.website.resetPasswordUrl}")
     private String resetUrl;
     @Autowired
@@ -55,13 +55,13 @@ public class AccountEndpoint {
                            @Autowired CharacterRepository characterRepository,
                            @Autowired AccountResetRequestRepository accountResetRequestRepository,
                            @Autowired CaptchaService captchaService,
-                           @Autowired EMailService EMailService) {
+                           @Autowired EMailService eMailService) {
         this.accountRepository = accountRepository;
         this.storeAccountTokensRepository = storeAccountTokensRepository;
         this.characterRepository = characterRepository;
         this.accountResetRequestRepository = accountResetRequestRepository;
         this.captchaService = captchaService;
-        this.EMailService = EMailService;
+        this.eMailService = eMailService;
     }
 
     //fixme add blacklist for account creation
@@ -69,49 +69,40 @@ public class AccountEndpoint {
     @PostMapping(value = "", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<String> createAccount(@RequestBody CreateAccountRequest body, HttpServletRequest request) {
-        //verify captcha
         if (!captchaService.captchaSuccessful(body.getCaptchaToken(), request.getHeader("X-Real-IP"))) {
             log.info("Account creation error, Email: {}, User: {}, Failed to pass Captcha ", body.getEmail(), body.getUsername());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
-        // Password is recieved as base64 as to not be exposed in a poorly written frontend
-        // and handled as a char array to not be logged in plain text if handled incorrectly in backend,
-        // meaning that both these features is to avoid a person seeing the password "over the shoulder"
-        char[] passwordBase64 = body.getPasswordBase64();
+        String password = new String(Base64.getDecoder().decode(new String(body.getPasswordBase64())));
         String email = body.getEmail();
         String username = body.getUsername();
-        //verify recruiter
         String recruiterName = body.getRecruiterName();
         int recruiterId = 0;
         if (!StringUtils.isEmpty(recruiterName)) {
             //fixme recruiterID should be based on something arbitrary and not recruiters account name,
             // that way you could give randoms your recruit token and give people recruitment based bonuses
             Account recruiterAccount = accountRepository.findByUsername(recruiterName);
-            //Recruiter does not exist
             if (recruiterAccount == null) {
                 return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Failed: Recruiter doesn't exist");
             }
             recruiterId = recruiterAccount.getId();
         }
 
-        // Verify the fields we need are included and in correct format
         ResponseEntity<String> badDataResponse = verifyCreationData(email, 255, "Email", null, "@", ".");
         badDataResponse = verifyCreationData(username, 15, "Username", badDataResponse);
-        badDataResponse = verifyCreationData(new String(passwordBase64), 15, "password", badDataResponse);
+        badDataResponse = verifyCreationData(password, 15, "password", badDataResponse);
         if (badDataResponse != null) {
             return badDataResponse;
         }
 
-        // Verify Username / email not used
         else if (accountRepository.findByUsername(username) != null) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Failed: Username already in use");
         } else if (accountRepository.findByEmail(email) != null) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Failed: Email already in use");
         }
-        // Create account
         else {
-            WowCryptoInfo wowCryptoInfo = CryptographyUtils.calculateVerifierAndSalt(username, new String(DatatypeConverter.parseBase64Binary(new String(passwordBase64))));
+            WowCryptoInfo wowCryptoInfo = CryptographyUtils.calculateVerifierAndSalt(username, password);
             Account newAccount = new Account(username, wowCryptoInfo, email);
             newAccount.setRecruiter(recruiterId);
             accountRepository.save(newAccount);
@@ -161,11 +152,9 @@ public class AccountEndpoint {
         AccountReset resetAccountRequest = new AccountReset(account.getEmail(), ipAddress);
         resetAccountRequest.setValidRequest(true);
         accountResetRequestRepository.save(resetAccountRequest);
-        EMailService.sendEmailCustomerSupport(requestData.getEmail(),
+        eMailService.sendEmailCustomerSupport(requestData.getEmail(),
                 "Password reset", StringUtils.buildResetAccountUrl(account.getEmail(), resetAccountRequest.getUuid(), resetUrl));
 
-        // Entry accepted, after this the user should recieve an email with a confirmation
-        // link to the "/confirmPasswordChange" endpoint in this controller
         return ResponseEntity.status(HttpStatus.CREATED).body("Success: Email created!");
     }
 
@@ -174,7 +163,6 @@ public class AccountEndpoint {
     public ResponseEntity<String> confirmPasswordChange(@RequestBody ConfirmResetAccountRequest
                                                                 requestData, HttpServletRequest request) {
         Account account = accountRepository.findByEmail(requestData.getEmail());
-        // validate
         ArrayList<AccountReset> accountResetRequest =
                 accountResetRequestRepository.findByUuidAndEmailAndValidRequestIsTrue(requestData.getUuid(), requestData.getEmail());
         if (!accountResetRequest.isEmpty() && account != null) {
@@ -185,8 +173,7 @@ public class AccountEndpoint {
         } else {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Failed: Missing important data!");
         }
-        // change password
-        WowCryptoInfo wowCryptoInfo = CryptographyUtils.calculateVerifierAndSalt(account.getUsername(), new String(DatatypeConverter.parseBase64Binary(new String(requestData.getPasswordBase64()))));
+        WowCryptoInfo wowCryptoInfo = CryptographyUtils.calculateVerifierAndSalt(account.getUsername(), new String(Base64.getDecoder().decode(new String(requestData.getPasswordBase64()))));
         account.setSalt(wowCryptoInfo.getSalt());
         account.setVerifier(wowCryptoInfo.getVerifier());
         accountRepository.save(account);

@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import io.github.engineeringov.website.api.common.jpa.model.acore.Character;
 import io.github.engineeringov.website.api.common.jpa.model.custom.StorePackageBase;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

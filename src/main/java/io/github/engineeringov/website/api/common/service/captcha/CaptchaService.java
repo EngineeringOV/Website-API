@@ -22,8 +22,15 @@ public class CaptchaService {
     private String captchaPrivateKey;
     @Value("${google.captcha.verifyUrl}")
     private String siteVerifyUrl;
+    @Value("${api.devMode}")
+    private boolean devMode;
 
     public boolean captchaSuccessful(String captchaToken, String ipAddress) {
+        if (devMode) {
+            log.debug("DevMode is enabled, skipping captcha verification");
+            return true;
+        }
+
         CaptchaSiteVerifyResponse response;
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("secret", captchaPrivateKey);

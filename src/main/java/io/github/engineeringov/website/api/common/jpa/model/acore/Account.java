@@ -5,9 +5,8 @@ import io.github.engineeringov.website.api.model.WowCryptoInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
@@ -29,19 +28,15 @@ public class Account implements Serializable {
     private String username;
 
     @Column(columnDefinition = "BINARY(32)", name = "salt")
-    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] salt;
 
     @Column(columnDefinition = "BINARY(32)", name = "verifier")
-    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] verifier;
 
     @Column(columnDefinition = "BINARY(40)", name = "session_key")
-    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] sessionKey = null;
 
     @Column(columnDefinition = "VARBINARY(100)", name = "totp_secret")
-    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] totpSecret = null;
 
     @Column(columnDefinition = "VARCHAR(255)", name = "email")
@@ -63,7 +58,6 @@ public class Account implements Serializable {
     private int failedLogins = 0;
 
     @Column( columnDefinition = "TINYINT", name = "locked")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean locked = false;
 
     @Column(columnDefinition = "VARCHAR(2)", name = "lock_country")
@@ -73,7 +67,6 @@ public class Account implements Serializable {
     private LocalDate lastLogin = null;
 
     @Column(columnDefinition = "INT", name = "online")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean online = false;
 
     @Column(columnDefinition = "TINYINT", name = "expansion")

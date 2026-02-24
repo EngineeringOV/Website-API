@@ -1,13 +1,13 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.2'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.springframework.boot' version '3.5.0'
+	id 'io.spring.dependency-management' version '1.1.7'
 	id 'java'
 	id 'war'
 }
 
 group = 'engineeringov.github.io'
 version = ''
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 configurations {
 	compileOnly {
@@ -24,22 +24,21 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.25'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.3'
-	implementation 'org.springframework.boot:spring-boot-starter-data-rest:2.7.3'
-	implementation 'org.springframework.boot:spring-boot-starter-jersey:2.7.3'
-	implementation 'org.springframework.boot:spring-boot-starter-web:2.7.3'
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1'
-	compileOnly 'org.projectlombok:lombok:1.18.26'
-	annotationProcessor 'org.projectlombok:lombok:1.18.24'
-	compile fileTree(dir: 'lib/', include: '**/*.jar')
-	implementation 'org.apache.logging.log4j:log4j-core:2.21.0'
-	implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.3'
-	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.30'
-	implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
+	implementation 'com.mysql:mysql-connector-j'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	implementation 'org.springframework.boot:spring-boot-starter-jersey'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation fileTree(dir: 'lib/', include: '**/*.jar')
+	implementation 'org.apache.logging.log4j:log4j-core'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
 
 	// Spring testing
-	testCompile('org.springframework.boot:spring-boot-starter-test:2.7.3')
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 test {
@@ -47,5 +46,5 @@ test {
 }
 
 war {
-	baseName 'API'
+	archiveBaseName = 'API'
 }

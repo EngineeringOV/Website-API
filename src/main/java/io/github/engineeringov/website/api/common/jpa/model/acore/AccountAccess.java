@@ -3,7 +3,7 @@ package io.github.engineeringov.website.api.common.jpa.model.acore;
 import lombok.Data;
 import lombok.ToString;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Data

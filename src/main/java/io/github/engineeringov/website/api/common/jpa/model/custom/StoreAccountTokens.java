@@ -3,10 +3,9 @@ package io.github.engineeringov.website.api.common.jpa.model.custom;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
 import io.github.engineeringov.website.api.common.jpa.model.acore.Account;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Data
 @Entity
@@ -20,8 +19,7 @@ public class StoreAccountTokens {
     }
 
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "`uuid`")
     private String uuid;
 

@@ -3,9 +3,8 @@ package io.github.engineeringov.website.api.common.jpa.model.acore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Data
@@ -17,17 +16,14 @@ public class GameMailItems implements Serializable {
 
     @ManyToOne
     @JoinColumn(columnDefinition = "INT", name = "mail_id")
-    @Type(type = "org.hibernate.type.IntegerType")
     private GameMail mailId;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Type(type = "org.hibernate.type.IntegerType")
     @Column(columnDefinition = "INT", name = "item_guid")
     @Id
     private int itemGuid;
 
     @ManyToOne
     @JoinColumn(columnDefinition = "INT", name = "receiver")
-    @Type(type = "org.hibernate.type.IntegerType")
     private Character receiver;
 }

@@ -1,9 +1,8 @@
 package io.github.engineeringov.website.api.common.jpa.model.custom;
 
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
@@ -12,8 +11,7 @@ import java.util.List;
 public class StorePackageBase {
 
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "`uuid`")
     private String uuid;
 

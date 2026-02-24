@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
@@ -22,8 +20,7 @@ public class AccountReset {
     }
 
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "`uuid`")
     private String uuid;
 
@@ -38,7 +35,6 @@ public class AccountReset {
     private LocalDateTime createdAt;
 
     @Column(name = "valid_request", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean validRequest = false;
 
     public AccountReset(String email, String ipAddress) {

@@ -40,9 +40,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             };
         }
         GrantedAuthority userRole = new SimpleGrantedAuthority(account.getAccountAccess().gmLevelToString());
-        // Create a new Authentication object with modified credentials
         Authentication modifiedAuthentication = new UsernamePasswordAuthenticationToken(inputUsername, authentication.getCredentials(), List.of(userRole));
-        // Additional authentication logic can be performed here
         SecurityContextHolder.getContext().setAuthentication(modifiedAuthentication);
 
         return modifiedAuthentication;
