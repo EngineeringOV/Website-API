@@ -274,18 +274,17 @@
         const username = document.getElementById('login-username').value;
         const password = document.getElementById('login-password').value;
 
-        // password is sent as a char array to match the backend LoginRequest model
-        const body = {
-            username: username,
-            password: Array.from(password),
-            captchaToken: ''
-        };
+        // Spring Security form login expects form-urlencoded data
+        const formData = new URLSearchParams();
+        formData.append('username', username);
+        formData.append('password', password);
 
         try {
             const res = await fetch(base() + '/rest/account/authenticate', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData,
+                credentials: 'include'
             });
             const text = await res.text();
             if (res.ok) {
@@ -294,7 +293,7 @@
                 if (parts.length >= 2) {
                     jwtToken = parts.slice(1).join(' ');
                     updateJwtDisplay();
-                    setResult('res-login', res.status, 'Authenticated as: ' + parts[0] + '\nJWT stored successfully.');
+                    setResult('res-login', res.status, 'Authenticated as: ' + parts[0] + '\nSession stored successfully.');
                 } else {
                     setResult('res-login', res.status, text);
                 }

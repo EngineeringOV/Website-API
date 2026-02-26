@@ -39,7 +39,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new AuthenticationException("Invalid credentials") {
             };
         }
-        GrantedAuthority userRole = new SimpleGrantedAuthority(account.getAccountAccess().gmLevelToString());
+        // Default to PLAYER role if no account_access entry exists
+        String role = account.getAccountAccess() != null
+                ? account.getAccountAccess().gmLevelToString()
+                : "ROLE_PLAYER";
+        GrantedAuthority userRole = new SimpleGrantedAuthority(role);
         Authentication modifiedAuthentication = new UsernamePasswordAuthenticationToken(inputUsername, authentication.getCredentials(), List.of(userRole));
         SecurityContextHolder.getContext().setAuthentication(modifiedAuthentication);
 

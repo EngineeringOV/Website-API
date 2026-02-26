@@ -28,12 +28,18 @@ public class WebSecurityConfig {
 
     private final String websiteUrl;
     private final CustomAuthenticationProvider customAuthenticationProvider;
+    private final CustomAuthenticationSuccessHandler successHandler;
+    private final CustomAuthenticationFailureHandler failureHandler;
     private final boolean devMode;
 
     public WebSecurityConfig(@Autowired CustomAuthenticationProvider customAuthenticationProvider,
+                             @Autowired CustomAuthenticationSuccessHandler successHandler,
+                             @Autowired CustomAuthenticationFailureHandler failureHandler,
                              @Value("${api.customization.website.url}") String websiteUrl,
                              @Value("${api.devMode}") boolean devMode) {
         this.customAuthenticationProvider = customAuthenticationProvider;
+        this.successHandler = successHandler;
+        this.failureHandler = failureHandler;
         this.websiteUrl = websiteUrl;
         this.devMode = devMode;
     }
@@ -53,7 +59,13 @@ public class WebSecurityConfig {
                         .requestMatchers("/rest/DEV/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
-                .formLogin(AbstractHttpConfigurer::disable)
+                .formLogin(form -> form
+                        .loginProcessingUrl("/rest/account/authenticate")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .successHandler(successHandler)
+                        .failureHandler(failureHandler)
+                )
                 .logout(logout -> logout.logoutUrl("/logout"))
                 .sessionManagement(session ->
                         session
