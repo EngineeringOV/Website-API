@@ -192,6 +192,8 @@ public class AccountEndpoint {
             return verifyCreationDataFailed("Failed: \"" + fieldName + "\" is missing");
         } else if (maxLength > 0 && field.length() > maxLength) {
             return verifyCreationDataFailed("Failed: \"" + fieldName + "\" is too long (>" + maxLength + ")");
+        } else if (field.contains(":")) {
+            return verifyCreationDataFailed("Failed: \"" + fieldName + "\" contains invalid character ':'");
         } else if (Arrays.stream(mustContain).allMatch(field::contains)) {
             return verifyCreationDataFailed("Failed: \"" + fieldName + "\" is malformed");
         }
