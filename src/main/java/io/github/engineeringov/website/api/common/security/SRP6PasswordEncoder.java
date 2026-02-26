@@ -32,7 +32,12 @@ public class SRP6PasswordEncoder implements PasswordEncoder {
         String username = nameAndPass
                 .subSequence(0, nameAndPassString.indexOf(":"))
                 .toString();
-        byte[] userSalt = accountRepository.findByUsername(username).getSalt();
+        Account account = accountRepository.findByUsername(username);
+        if (account == null) {
+            log.warn("Account not found for username");
+            return false;
+        }
+        byte[] userSalt = account.getSalt();
         byte[] inputEncoded = CryptographyUtils
                 .calculateVerifierWithSalt(userSalt, nameAndPass.toString())
                 .getVerifier();
