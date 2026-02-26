@@ -194,7 +194,7 @@ public class AccountEndpoint {
             return verifyCreationDataFailed("Failed: \"" + fieldName + "\" is too long (>" + maxLength + ")");
         } else if (field.contains(":")) {
             return verifyCreationDataFailed("Failed: \"" + fieldName + "\" contains invalid character ':'");
-        } else if (Arrays.stream(mustContain).allMatch(field::contains)) {
+        } else if (!Arrays.stream(mustContain).allMatch(field::contains)) {
             return verifyCreationDataFailed("Failed: \"" + fieldName + "\" is malformed");
         }
 

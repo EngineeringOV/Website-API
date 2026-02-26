@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Backend Tester</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 10px; color: #e94560; }
+        .config-bar {
+            display: flex; align-items: center; gap: 10px; justify-content: center;
+            margin-bottom: 20px; padding: 10px; background: #16213e; border-radius: 8px;
+        }
+        .config-bar label { font-weight: bold; color: #e94560; }
+        .config-bar input { padding: 6px 10px; border-radius: 4px; border: 1px solid #0f3460; background: #1a1a2e; color: #e0e0e0; width: 320px; }
+        .jwt-display { font-size: 12px; color: #53d769; word-break: break-all; max-width: 500px; text-align: left; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 16px; }
+        .card {
+            background: #16213e; border: 1px solid #0f3460; border-radius: 10px; padding: 18px;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .card h2 { color: #e94560; font-size: 16px; border-bottom: 1px solid #0f3460; padding-bottom: 6px; }
+        .card .method-badge {
+            display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px;
+            font-weight: bold; margin-right: 6px; vertical-align: middle;
+        }
+        .method-badge.get { background: #53d769; color: #000; }
+        .method-badge.post { background: #007aff; color: #fff; }
+        .card .endpoint { font-family: monospace; font-size: 13px; color: #aaa; }
+        .card label { font-size: 13px; color: #ccc; }
+        .card input, .card textarea {
+            padding: 6px 10px; border-radius: 4px; border: 1px solid #0f3460;
+            background: #1a1a2e; color: #e0e0e0; font-size: 13px; width: 100%;
+        }
+        .card textarea { resize: vertical; min-height: 50px; font-family: monospace; }
+        .card button {
+            padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer;
+            font-weight: bold; font-size: 13px; background: #e94560; color: #fff;
+            transition: background 0.2s;
+        }
+        .card button:hover { background: #c73652; }
+        .card .auth-badge {
+            display: inline-block; padding: 2px 6px; border-radius: 4px;
+            font-size: 10px; font-weight: bold; background: #ff9f43; color: #000;
+        }
+        .response-box {
+            background: #0f3460; border-radius: 6px; padding: 10px; font-family: monospace;
+            font-size: 12px; white-space: pre-wrap; word-break: break-all;
+            max-height: 200px; overflow-y: auto; min-height: 30px; color: #e0e0e0;
+        }
+        .response-box.error { color: #ff6b6b; }
+        .response-box.success { color: #53d769; }
+        .row { display: flex; gap: 8px; align-items: center; }
+        .row input { flex: 1; }
+    </style>
+</head>
+<body>
+
+<h1>&#128295; API Backend Tester</h1>
+
+<div class="config-bar">
+    <label for="baseUrl">Base URL:</label>
+    <input type="text" id="baseUrl" value="http://localhost:8080">
+    <label>JWT:</label>
+    <div class="jwt-display" id="jwtDisplay">Not authenticated</div>
+</div>
+
+<div class="grid">
+
+    <!-- Online Count -->
+    <div class="card">
+        <h2>
+            <span class="method-badge get">GET</span>
+            Online Players
+        </h2>
+        <div class="endpoint">/rest/account/online</div>
+        <button onclick="getOnline()">Fetch Online Count</button>
+        <div class="response-box" id="res-online"></div>
+    </div>
+
+    <!-- Create Account -->
+    <div class="card">
+        <h2>
+            <span class="method-badge post">POST</span>
+            Create Account
+        </h2>
+        <div class="endpoint">/rest/account</div>
+        <label>Username</label>
+        <input type="text" id="reg-username" placeholder="e.g. testuser">
+        <label>Password</label>
+        <input type="password" id="reg-password" placeholder="plain text password">
+        <label>Email</label>
+        <input type="email" id="reg-email" placeholder="test@example.com">
+        <label>Recruiter Name (optional)</label>
+        <input type="text" id="reg-recruiter" placeholder="">
+        <label>Captcha Token (optional)</label>
+        <input type="text" id="reg-captcha" placeholder="leave blank if captcha disabled">
+        <button onclick="createAccount()">Create Account</button>
+        <div class="response-box" id="res-register"></div>
+    </div>
+
+    <!-- Login / Authenticate -->
+    <div class="card">
+        <h2>
+            <span class="method-badge post">POST</span>
+            Login (JWT Authentication)
+        </h2>
+        <div class="endpoint">/rest/account/authenticate</div>
+        <label>Username</label>
+        <input type="text" id="login-username" placeholder="e.g. testuser">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="plain text password">
+        <button onclick="login()">Authenticate</button>
+        <div class="response-box" id="res-login"></div>
+    </div>
+
+    <!-- Get Gold (Authenticated) -->
+    <div class="card">
+        <h2>
+            <span class="method-badge get">GET</span>
+            Account Gold
+            <span class="auth-badge">&#128274; AUTH</span>
+        </h2>
+        <div class="endpoint">/rest/account/authenticated/gold</div>
+        <button onclick="getGold()">Fetch Gold</button>
+        <div class="response-box" id="res-gold"></div>
+    </div>
+
+    <!-- Store Items -->
+    <div class="card">
+        <h2>
+            <span class="method-badge get">GET</span>
+            Store Items
+        </h2>
+        <div class="endpoint">/rest/store</div>
+        <button onclick="getStoreItems()">Fetch Store Items</button>
+        <div class="response-box" id="res-store"></div>
+    </div>
+
+    <!-- Password Recovery -->
+    <div class="card">
+        <h2>
+            <span class="method-badge post">POST</span>
+            Password Recovery (Request Reset)
+        </h2>
+        <div class="endpoint">/rest/account/recover</div>
+        <label>Email</label>
+        <input type="email" id="recover-email" placeholder="test@example.com">
+        <label>Captcha Token (optional)</label>
+        <input type="text" id="recover-captcha" placeholder="">
+        <button onclick="recoverPassword()">Send Recovery Email</button>
+        <div class="response-box" id="res-recover"></div>
+    </div>
+
+    <!-- Confirm Password Change -->
+    <div class="card">
+        <h2>
+            <span class="method-badge post">POST</span>
+            Confirm Password Change
+        </h2>
+        <div class="endpoint">/rest/account/confirmPasswordChange</div>
+        <label>Email</label>
+        <input type="email" id="confirm-email" placeholder="test@example.com">
+        <label>UUID (from reset email)</label>
+        <input type="text" id="confirm-uuid" placeholder="uuid from email link">
+        <label>New Password</label>
+        <input type="password" id="confirm-password" placeholder="new plain text password">
+        <button onclick="confirmReset()">Confirm Password Reset</button>
+        <div class="response-box" id="res-confirm"></div>
+    </div>
+
+    <!-- Raw Request -->
+    <div class="card">
+        <h2>&#128736; Custom Raw Request</h2>
+        <div class="row">
+            <select id="raw-method" style="padding:6px;border-radius:4px;border:1px solid #0f3460;background:#1a1a2e;color:#e0e0e0;">
+                <option>GET</option>
+                <option>POST</option>
+                <option>PUT</option>
+                <option>DELETE</option>
+            </select>
+            <input type="text" id="raw-path" placeholder="/rest/...">
+        </div>
+        <label>Request Body (JSON, optional)</label>
+        <textarea id="raw-body" placeholder='{"key": "value"}'></textarea>
+        <div class="row">
+            <label><input type="checkbox" id="raw-auth" checked> Send JWT</label>
+        </div>
+        <button onclick="rawRequest()">Send</button>
+        <div class="response-box" id="res-raw"></div>
+    </div>
+
+</div>
+
+<script>
+    let jwtToken = null;
+
+    function base() {
+        return document.getElementById('baseUrl').value.replace(/\/+$/, '');
+    }
+
+    function setResult(id, status, text) {
+        const el = document.getElementById(id);
+        el.className = 'response-box ' + (status >= 200 && status < 300 ? 'success' : 'error');
+        el.textContent = '[' + status + '] ' + text;
+    }
+
+    function setResultRaw(id, text, isError) {
+        const el = document.getElementById(id);
+        el.className = 'response-box ' + (isError ? 'error' : '');
+        el.textContent = text;
+    }
+
+    function authHeaders() {
+        const h = { 'Content-Type': 'application/json' };
+        if (jwtToken) h['Authorization'] = 'Bearer ' + jwtToken;
+        return h;
+    }
+
+    function updateJwtDisplay() {
+        const el = document.getElementById('jwtDisplay');
+        if (jwtToken) {
+            el.textContent = jwtToken.length > 80 ? jwtToken.substring(0, 80) + '...' : jwtToken;
+            el.style.color = '#53d769';
+        } else {
+            el.textContent = 'Not authenticated';
+            el.style.color = '#ff6b6b';
+        }
+    }
+
+    // ---- Online Count ----
+    async function getOnline() {
+        try {
+            const res = await fetch(base() + '/rest/account/online');
+            const text = await res.text();
+            setResult('res-online', res.status, text);
+        } catch (e) {
+            setResultRaw('res-online', 'Network error: ' + e.message, true);
+        }
+    }
+
+    // ---- Create Account ----
+    async function createAccount() {
+        const username = document.getElementById('reg-username').value;
+        const password = document.getElementById('reg-password').value;
+        const email = document.getElementById('reg-email').value;
+        const recruiterName = document.getElementById('reg-recruiter').value;
+        const captchaToken = document.getElementById('reg-captcha').value;
+
+        const body = {
+            username: username,
+            passwordBase64: Array.from(btoa(password)),
+            email: email,
+            captchaToken: captchaToken || '',
+            recruiterName: recruiterName || ''
+        };
+
+        try {
+            const res = await fetch(base() + '/rest/account', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const text = await res.text();
+            setResult('res-register', res.status, text);
+        } catch (e) {
+            setResultRaw('res-register', 'Network error: ' + e.message, true);
+        }
+    }
+
+    // ---- Login ----
+    async function login() {
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+
+        // password is sent as a char array to match the backend LoginRequest model
+        const body = {
+            username: username,
+            password: Array.from(password),
+            captchaToken: ''
+        };
+
+        try {
+            const res = await fetch(base() + '/rest/account/authenticate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const text = await res.text();
+            if (res.ok) {
+                // Response format: "username token"
+                const parts = text.split(' ');
+                if (parts.length >= 2) {
+                    jwtToken = parts.slice(1).join(' ');
+                    updateJwtDisplay();
+                    setResult('res-login', res.status, 'Authenticated as: ' + parts[0] + '\nJWT stored successfully.');
+                } else {
+                    setResult('res-login', res.status, text);
+                }
+            } else {
+                setResult('res-login', res.status, text || 'Authentication failed');
+            }
+        } catch (e) {
+            setResultRaw('res-login', 'Network error: ' + e.message, true);
+        }
+    }
+
+    // ---- Get Gold (Authenticated) ----
+    async function getGold() {
+        if (!jwtToken) {
+            setResultRaw('res-gold', 'Not authenticated. Please login first.', true);
+            return;
+        }
+        try {
+            const res = await fetch(base() + '/rest/account/authenticated/gold', {
+                headers: authHeaders()
+            });
+            const text = await res.text();
+            setResult('res-gold', res.status, text);
+        } catch (e) {
+            setResultRaw('res-gold', 'Network error: ' + e.message, true);
+        }
+    }
+
+    // ---- Store Items ----
+    async function getStoreItems() {
+        try {
+            const res = await fetch(base() + '/rest/store', {
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const text = await res.text();
+            try {
+                const formatted = JSON.stringify(JSON.parse(text), null, 2);
+                setResult('res-store', res.status, formatted);
+            } catch (_) {
+                setResult('res-store', res.status, text);
+            }
+        } catch (e) {
+            setResultRaw('res-store', 'Network error: ' + e.message, true);
+        }
+    }
+
+    // ---- Password Recovery ----
+    async function recoverPassword() {
+        const email = document.getElementById('recover-email').value;
+        const captchaToken = document.getElementById('recover-captcha').value;
+
+        const body = {
+            email: email,
+            captchaToken: captchaToken || ''
+        };
+
+        try {
+            const res = await fetch(base() + '/rest/account/recover', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const text = await res.text();
+            setResult('res-recover', res.status, text);
+        } catch (e) {
+            setResultRaw('res-recover', 'Network error: ' + e.message, true);
+        }
+    }
+
+    // ---- Confirm Password Reset ----
+    async function confirmReset() {
+        const email = document.getElementById('confirm-email').value;
+        const uuid = document.getElementById('confirm-uuid').value;
+        const password = document.getElementById('confirm-password').value;
+
+        const body = {
+            email: email,
+            uuid: uuid,
+            passwordBase64: Array.from(btoa(password))
+        };
+
+        try {
+            const res = await fetch(base() + '/rest/account/confirmPasswordChange', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const text = await res.text();
+            setResult('res-confirm', res.status, text);
+        } catch (e) {
+            setResultRaw('res-confirm', 'Network error: ' + e.message, true);
+        }
+    }
+
+    // ---- Raw Request ----
+    async function rawRequest() {
+        const method = document.getElementById('raw-method').value;
+        const path = document.getElementById('raw-path').value;
+        const bodyText = document.getElementById('raw-body').value;
+        const sendAuth = document.getElementById('raw-auth').checked;
+
+        const headers = { 'Content-Type': 'application/json' };
+        if (sendAuth && jwtToken) headers['Authorization'] = 'Bearer ' + jwtToken;
+
+        const opts = { method: method, headers: headers };
+        if (method !== 'GET' && bodyText.trim()) {
+            opts.body = bodyText;
+        }
+
+        try {
+            const res = await fetch(base() + path, opts);
+            const text = await res.text();
+            try {
+                const formatted = JSON.stringify(JSON.parse(text), null, 2);
+                setResult('res-raw', res.status, formatted);
+            } catch (_) {
+                setResult('res-raw', res.status, text);
+            }
+        } catch (e) {
+            setResultRaw('res-raw', 'Network error: ' + e.message, true);
+        }
+    }
+
+    updateJwtDisplay();
+</script>
+
+</body>
+</html>
