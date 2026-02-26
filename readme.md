@@ -71,5 +71,6 @@ sudo chown root:root  /lib/libjcl.so
 sudo chown root:root  /lib/libnativegmp.so
 sudo chmod 755  /lib/libjcl.so
 sudo chmod 755  /lib/libnativegmp.so
+cd ../..
 ```
 
