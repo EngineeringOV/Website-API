@@ -46,11 +46,11 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(Customizer.withDefaults())
+                .csrf(devMode ? AbstractHttpConfigurer::disable : Customizer.withDefaults())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/**/authenticated/**").hasAnyRole("PLAYER", "GM", "ADMIN")
-                        .requestMatchers("/**/DEV/**").hasRole("ADMIN")
+                        .requestMatchers("/rest/authenticated/**").hasAnyRole("PLAYER", "GM", "ADMIN")
+                        .requestMatchers("/rest/DEV/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)

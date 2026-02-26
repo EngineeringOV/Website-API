@@ -25,12 +25,22 @@ sudo apt install mysql-server
 sudo apt install gcc libgmp-dev
 ```
 
-2: Logging into mysql
+2: Logging into mysql 
+
+**Option A: Local MySQL installation**
 ```bash
 sudo mysql -u root
 ```
 
+**Option B: AzerothCore Docker MySQL container (no sudo available)**
+```bash
+docker exec -it ac-database mysql -u root -p
+```
+> Note: The default root password for AzerothCore Docker is typically `password`. Check your `.env` file or `docker-compose.yml` for the `MYSQL_ROOT_PASSWORD` value.
+
 3: Creating Mysql user (Replace with your password), creates tables and setting privileges for our new user
+
+> **Important for Docker users:** If you're using AzerothCore Docker, replace `'spring'@'localhost'` with `'spring'@'%'` in the commands below to allow connections from outside the container.
 ###  Replace with your password in the first line (match it to the environment variable with the key "spring.datasource.password" in your .properties file)
 ```mysql
 CREATE USER 'spring'@'localhost' IDENTIFIED BY '!!REPLACE-ME!!';
