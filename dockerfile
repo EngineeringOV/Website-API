@@ -15,7 +15,6 @@ COPY build.gradle .
 COPY settings.gradle .
 RUN mkdir -p lib && cp $(find /tmp/gmp-java -name "*.jar" | head -1) lib/
 
-# Clean any stale gradle cache and download dependencies
 RUN gradle dependencies --no-daemon --no-build-cache || true
 
 COPY src src

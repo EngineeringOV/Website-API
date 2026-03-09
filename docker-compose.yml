@@ -13,6 +13,26 @@ services:
       - ac-network
     restart: unless-stopped
 
+  nginx:
+    profiles:
+      - nginx
+    build:
+      context: ./src/main/html/website-container
+      dockerfile: Dockerfile
+    container_name: website-nginx
+    ports:
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
+    environment:
+      - NGINX_INDEX=${NGINX_INDEX:-index.html}
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:ro
+    networks:
+      - ac-network
+    restart: unless-stopped
+
 networks:
   ac-network:
     external: true
