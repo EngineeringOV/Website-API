@@ -18,9 +18,9 @@
 Choose a new password for the `spring` MySQL user. This is **not** an existing AzerothCore password — you are creating it now. It must match `spring.datasource.password` in your `.properties` file.
 
 ```bash
-read -rsp "New Spring DB password: " SPRING_PW && echo
+read -rsp "New Spring DB password: " WAPI_SPRING_PW && echo
 docker exec -i ac-database mysql -u root <<SQL
-CREATE USER 'spring'@'%' IDENTIFIED BY '$SPRING_PW';
+CREATE USER 'spring'@'%' IDENTIFIED BY '$WAPI_SPRING_PW';
 
 CREATE SCHEMA IF NOT EXISTS acore_world;
 CREATE SCHEMA IF NOT EXISTS acore_characters;
@@ -47,10 +47,10 @@ SQL
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
-read -rp "Domain (e.g. example.com): " DOMAIN
+read -rp "Domain (e.g. example.com): " WAPI_DOMAIN
 sudo apt install certbot
-sudo certbot certonly --standalone -d "$DOMAIN"
-sed -i "s/DOMAIN=.*/DOMAIN=$DOMAIN/" .env
+sudo certbot certonly --standalone -d "$WAPI_DOMAIN"
+sed -i "s/DOMAIN=.*/DOMAIN=$WAPI_DOMAIN/" .env
 ```
 
 Renewal (if container is already running):
@@ -91,9 +91,9 @@ export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 Choose a new password for the `spring` MySQL user. This is **not** an existing AzerothCore password — you are creating it now. It must match `spring.datasource.password` in your `.properties` file.
 
 ```bash
-read -rsp "New Spring DB password: " SPRING_PW && echo
+read -rsp "New Spring DB password: " WAPI_SPRING_PW && echo
 sudo mysql <<SQL
-CREATE USER 'spring'@'localhost' IDENTIFIED BY '$SPRING_PW';
+CREATE USER 'spring'@'localhost' IDENTIFIED BY '$WAPI_SPRING_PW';
 
 CREATE SCHEMA IF NOT EXISTS acore_world;
 CREATE SCHEMA IF NOT EXISTS acore_characters;
@@ -137,10 +137,10 @@ cd ../..
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
-read -rp "Domain (e.g. example.com): " DOMAIN
+read -rp "Domain (e.g. example.com): " WAPI_DOMAIN
 sudo apt install certbot
-sudo certbot certonly --standalone -d "$DOMAIN"
-sed -i "s/DOMAIN=.*/DOMAIN=$DOMAIN/" .env
+sudo certbot certonly --standalone -d "$WAPI_DOMAIN"
+sed -i "s/DOMAIN=.*/DOMAIN=$WAPI_DOMAIN/" .env
 ```
 
 Renewal (if container is already running):
