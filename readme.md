@@ -85,14 +85,6 @@ SPRING_HOST=localhost SPRING_PASSWORD="$WAPI_SPRING_PW" \
   envsubst '${SPRING_HOST} ${SPRING_PASSWORD}' < sql/init.sql.template | sudo mysql
 ```
 
-Or without `envsubst`, using `sed`:
-
-```bash
-read -rsp "New Spring DB password: " WAPI_SPRING_PW && echo
-sed -e "s/\${SPRING_HOST}/localhost/g" -e "s/\${SPRING_PASSWORD}/$WAPI_SPRING_PW/g" \
-  sql/init.sql.template | sudo mysql
-```
-
 ### 2: Install GMP (from project root, assuming Debian/Ubuntu)
 
 ```bash
