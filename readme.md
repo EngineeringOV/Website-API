@@ -124,7 +124,7 @@ GRANT ALL PRIVILEGES ON acore_world.* TO 'spring'@'localhost';
 SQL
 ```
 
-### 4: Install GMP (from project root, assuming Debian/Ubuntu)
+### 3: Install GMP (from project root, assuming Debian/Ubuntu)
 
 ```bash
 mkdir lib
@@ -142,7 +142,7 @@ sudo chmod 755 /lib/libnativegmp.so
 cd ../..
 ```
 
-### 5: HTTPS / SSL Setup (nginx only)
+### 4: HTTPS / SSL Setup (nginx only)
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
@@ -157,7 +157,7 @@ Renewal (if container is already running):
 sudo certbot renew --webroot -w /var/www/certbot
 ```
 
-### 6: Start
+### 5: Start
 
 ```bash
 ./gradlew bootWar
