@@ -87,14 +87,7 @@ sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-18.0.2.
 export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 ```
 
-### 1: Install MySQL & GMP
-
-```bash
-sudo apt install mysql-server
-sudo apt install gcc libgmp-dev
-```
-
-### 2: Creating MySQL user & tables
+### 1: Creating MySQL user & tables
 
 Choose a new password for the `spring` MySQL user. This is **not** an existing AzerothCore password — you are creating it now. It must match `spring.datasource.password` in your `.properties` file.
 
@@ -124,9 +117,10 @@ GRANT ALL PRIVILEGES ON acore_world.* TO 'spring'@'localhost';
 SQL
 ```
 
-### 3: Install GMP (from project root, assuming Debian/Ubuntu)
+### 2: Install GMP (from project root, assuming Debian/Ubuntu)
 
 ```bash
+sudo apt install gcc libgmp-dev
 mkdir lib
 cd lib
 git clone https://github.com/EngineeringOV/GMP-java.git
@@ -142,7 +136,7 @@ sudo chmod 755 /lib/libnativegmp.so
 cd ../..
 ```
 
-### 4: HTTPS / SSL Setup (nginx only)
+### 3: HTTPS / SSL Setup (nginx only)
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
@@ -157,7 +151,7 @@ Renewal (if container is already running):
 sudo certbot renew --webroot -w /var/www/certbot
 ```
 
-### 5: Start
+### 4: Start
 
 ```bash
 ./gradlew bootWar
