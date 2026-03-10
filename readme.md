@@ -15,16 +15,19 @@
 
 ### 1: Logging into MySQL (via AzerothCore Docker container)
 
+`docker exec` runs as the container's root OS user, so MariaDB allows passwordless login via unix socket auth:
+
 ```bash
-read -rsp "MySQL root password: " ROOT_PW && echo
-docker exec -it ac-database mysql --user=root --password="$ROOT_PW"
+docker exec -it ac-database mysql -u root
 ```
 
 ### 2: Creating MySQL user & tables
 
+Choose a new password for the `spring` MySQL user. This is **not** an existing AzerothCore password — you are creating it now. It must match `spring.datasource.password` in your `.properties` file.
+
 ```bash
-read -rsp "Spring DB password: " SPRING_PW && echo
-docker exec -i ac-database mysql --user=root --password="$ROOT_PW" <<SQL
+read -rsp "New Spring DB password: " SPRING_PW && echo
+docker exec -i ac-database mysql -u root <<SQL
 CREATE USER 'spring'@'%' IDENTIFIED BY '$SPRING_PW';
 
 CREATE SCHEMA IF NOT EXISTS acore_world;
@@ -101,15 +104,19 @@ sudo apt install gcc libgmp-dev
 
 ### 2: Logging into MySQL
 
+On Debian/Ubuntu, MySQL root uses unix socket auth — `sudo` is sufficient, no password needed:
+
 ```bash
-sudo mysql --user=root --password
+sudo mysql
 ```
 
 ### 3: Creating MySQL user & tables
 
+Choose a new password for the `spring` MySQL user. This is **not** an existing AzerothCore password — you are creating it now. It must match `spring.datasource.password` in your `.properties` file.
+
 ```bash
-read -rsp "Spring DB password: " SPRING_PW && echo
-sudo mysql --user=root --password <<SQL
+read -rsp "New Spring DB password: " SPRING_PW && echo
+sudo mysql <<SQL
 CREATE USER 'spring'@'localhost' IDENTIFIED BY '$SPRING_PW';
 
 CREATE SCHEMA IF NOT EXISTS acore_world;
