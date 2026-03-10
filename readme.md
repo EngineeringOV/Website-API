@@ -13,15 +13,7 @@
 <details>
 <summary><strong>🐳 Docker Setup</strong></summary>
 
-### 1: Logging into MySQL (via AzerothCore Docker container)
-
-`docker exec` runs as the container's root OS user, so MariaDB allows passwordless login via unix socket auth:
-
-```bash
-docker exec -it ac-database mysql -u root
-```
-
-### 2: Creating MySQL user & tables
+### 1: Creating MySQL user & tables
 
 Choose a new password for the `spring` MySQL user. This is **not** an existing AzerothCore password — you are creating it now. It must match `spring.datasource.password` in your `.properties` file.
 
