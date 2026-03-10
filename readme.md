@@ -76,8 +76,9 @@ docker compose --profile nginx up
 <details>
 <summary><strong>🖥️ Bare Metal Setup</strong></summary>
 
-### 0: Install Java 18 (optional)
+### 0: Install Java 18 (optional) & create MySQL user/tables
 
+If Java 18 is not already installed:
 ```bash
 wget https://download.java.net/java/GA/jdk18.0.2.1/db379da656dc47308e138f21b33976fa/1/GPL/openjdk-18.0.2.1_linux-x64_bin.tar.gz
 tar xzf openjdk-18.0.2.1_linux-x64_bin.tar.gz
@@ -86,8 +87,6 @@ sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-18.0.2.1/
 sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-18.0.2.1/bin/javac 2
 export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 ```
-
-### 1: Creating MySQL user & tables
 
 Choose a new password for the `spring` MySQL user. This is **not** an existing AzerothCore password — you are creating it now. It must match `spring.datasource.password` in your `.properties` file.
 
@@ -121,10 +120,8 @@ SQL
 
 ```bash
 sudo apt install gcc libgmp-dev
-mkdir lib
-cd lib
-git clone https://github.com/EngineeringOV/GMP-java.git
-cd GMP-java
+git clone https://github.com/EngineeringOV/GMP-java.git lib/GMP-java
+cd lib/GMP-java
 make
 
 sudo cp libjcl.so /lib
