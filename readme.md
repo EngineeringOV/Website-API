@@ -43,7 +43,7 @@ GRANT ALL PRIVILEGES ON acore_world.* TO 'spring'@'%';
 SQL
 ```
 
-### 3: HTTPS / SSL Setup (nginx only)
+### 2: HTTPS / SSL Setup (nginx only)
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
@@ -58,7 +58,7 @@ Renewal (if container is already running):
 sudo certbot renew --webroot -w /var/www/certbot
 ```
 
-### 4: Start
+### 3: Start
 
 ```bash
 docker compose up
@@ -94,15 +94,7 @@ sudo apt install mysql-server
 sudo apt install gcc libgmp-dev
 ```
 
-### 2: Logging into MySQL
-
-On Debian/Ubuntu, MySQL root uses unix socket auth — `sudo` is sufficient, no password needed:
-
-```bash
-sudo mysql
-```
-
-### 3: Creating MySQL user & tables
+### 2: Creating MySQL user & tables
 
 Choose a new password for the `spring` MySQL user. This is **not** an existing AzerothCore password — you are creating it now. It must match `spring.datasource.password` in your `.properties` file.
 
