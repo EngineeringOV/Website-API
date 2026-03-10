@@ -13,35 +13,16 @@
 <details>
 <summary><strong>🐳 Docker Setup</strong></summary>
 
-### 1: Creating MySQL user & tables
+### 1: Configure passwords
 
-Choose a new password for the `spring` MySQL user. This is **not** an existing AzerothCore password — you are creating it now. It must match `spring.datasource.password` in your `.properties` file.
+Set your database passwords in the `.env` file:
 
-```bash
-read -rsp "New Spring DB password: " WAPI_SPRING_PW && echo
-docker exec -i ac-database mysql -u root <<SQL
-CREATE USER 'spring'@'%' IDENTIFIED BY '$WAPI_SPRING_PW';
-
-CREATE SCHEMA IF NOT EXISTS acore_world;
-CREATE SCHEMA IF NOT EXISTS acore_characters;
-CREATE SCHEMA IF NOT EXISTS acore_auth;
-CREATE SCHEMA IF NOT EXISTS acore_custom;
-
-CREATE TABLE IF NOT EXISTS acore_custom.account_reset_request (\`uuid\` VARCHAR(255) NOT NULL, created_at datetime, email VARCHAR(255), ip_address VARCHAR(255), valid_request TINYINT, primary key (\`uuid\`)) engine=InnoDB;
-CREATE TABLE IF NOT EXISTS acore_custom.store_account_tokens (\`uuid\` VARCHAR(255) NOT NULL, free_token integer, premium_token integer, vote_token integer, account_id INT, primary key (\`uuid\`)) engine=InnoDB;
-CREATE TABLE IF NOT EXISTS acore_custom.store_package_availability (\`uuid\` VARCHAR(255) NOT NULL, current_price bigint, \`current_price_units\` VARCHAR(255), ends_at datetime, starts_at datetime, item_base VARCHAR(255), primary key (\`uuid\`)) engine=InnoDB;
-CREATE TABLE IF NOT EXISTS acore_custom.store_package_base (\`uuid\` VARCHAR(255) NOT NULL, copper integer, \`full_price\` bigint, \`image_url\` VARCHAR(255), \`name_package\` VARCHAR(255), \`price_units\` VARCHAR(255), \`subtext\` VARCHAR(255), \`type\` VARCHAR(255), primary key (\`uuid\`)) engine=InnoDB;
-CREATE TABLE IF NOT EXISTS acore_custom.store_package_item (\`uuid\` VARCHAR(255) NOT NULL, item_id_alliance integer, item_id_horde integer, quantity_alliance integer, quantity_horde integer, \`item_base_uuid\` VARCHAR(255), primary key (\`uuid\`)) engine=InnoDB;
-ALTER TABLE acore_custom.store_account_tokens ADD CONSTRAINT FKrrdc41fys57mnbc61c9v2jpan FOREIGN KEY (account_id) REFERENCES acore_auth.account (id);
-ALTER TABLE acore_custom.store_package_availability ADD CONSTRAINT FKt0ob82dwamt56ee4ilk0fudo8 FOREIGN KEY (item_base) REFERENCES acore_custom.store_package_base (\`uuid\`);
-ALTER TABLE acore_custom.store_package_item ADD CONSTRAINT FKliyh2h1dvh86rsu89dupb7xfy FOREIGN KEY (\`item_base_uuid\`) REFERENCES acore_custom.store_package_base (\`uuid\`);
-
-GRANT ALL PRIVILEGES ON acore_custom.* TO 'spring'@'%';
-GRANT ALL PRIVILEGES ON acore_auth.* TO 'spring'@'%';
-GRANT ALL PRIVILEGES ON acore_characters.* TO 'spring'@'%';
-GRANT ALL PRIVILEGES ON acore_world.* TO 'spring'@'%';
-SQL
 ```
+DOCKER_DB_ROOT_PASSWORD=your_root_password
+DOCKER_SPRING_DB_PASSWORD=your_spring_password
+```
+
+The `entrypoint.sh` script automatically creates the `spring` MySQL user, schemas, and tables when the container starts using `sql/init.sql.template`. No manual SQL is needed.
 
 ### 2: HTTPS / SSL Setup (nginx only)
 
@@ -96,30 +77,20 @@ export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 
 Choose a new password for the `spring` MySQL user. This is **not** an existing AzerothCore password — you are creating it now. It must match `spring.datasource.password` in your `.properties` file.
 
+Requires `gettext` for `envsubst` (`sudo apt install gettext` on Debian/Ubuntu).
+
 ```bash
 read -rsp "New Spring DB password: " WAPI_SPRING_PW && echo
-sudo mysql <<SQL
-CREATE USER 'spring'@'localhost' IDENTIFIED BY '$WAPI_SPRING_PW';
+SPRING_HOST=localhost SPRING_PASSWORD="$WAPI_SPRING_PW" \
+  envsubst '${SPRING_HOST} ${SPRING_PASSWORD}' < sql/init.sql.template | sudo mysql
+```
 
-CREATE SCHEMA IF NOT EXISTS acore_world;
-CREATE SCHEMA IF NOT EXISTS acore_characters;
-CREATE SCHEMA IF NOT EXISTS acore_auth;
-CREATE SCHEMA IF NOT EXISTS acore_custom;
+Or without `envsubst`, using `sed`:
 
-CREATE TABLE IF NOT EXISTS acore_custom.account_reset_request (\`uuid\` VARCHAR(255) NOT NULL, created_at datetime, email VARCHAR(255), ip_address VARCHAR(255), valid_request TINYINT, primary key (\`uuid\`)) engine=InnoDB;
-CREATE TABLE IF NOT EXISTS acore_custom.store_account_tokens (\`uuid\` VARCHAR(255) NOT NULL, free_token integer, premium_token integer, vote_token integer, account_id INT, primary key (\`uuid\`)) engine=InnoDB;
-CREATE TABLE IF NOT EXISTS acore_custom.store_package_availability (\`uuid\` VARCHAR(255) NOT NULL, current_price bigint, \`current_price_units\` VARCHAR(255), ends_at datetime, starts_at datetime, item_base VARCHAR(255), primary key (\`uuid\`)) engine=InnoDB;
-CREATE TABLE IF NOT EXISTS acore_custom.store_package_base (\`uuid\` VARCHAR(255) NOT NULL, copper integer, \`full_price\` bigint, \`image_url\` VARCHAR(255), \`name_package\` VARCHAR(255), \`price_units\` VARCHAR(255), \`subtext\` VARCHAR(255), \`type\` VARCHAR(255), primary key (\`uuid\`)) engine=InnoDB;
-CREATE TABLE IF NOT EXISTS acore_custom.store_package_item (\`uuid\` VARCHAR(255) NOT NULL, item_id_alliance integer, item_id_horde integer, quantity_alliance integer, quantity_horde integer, \`item_base_uuid\` VARCHAR(255), primary key (\`uuid\`)) engine=InnoDB;
-ALTER TABLE acore_custom.store_account_tokens ADD CONSTRAINT FKrrdc41fys57mnbc61c9v2jpan FOREIGN KEY (account_id) REFERENCES acore_auth.account (id);
-ALTER TABLE acore_custom.store_package_availability ADD CONSTRAINT FKt0ob82dwamt56ee4ilk0fudo8 FOREIGN KEY (item_base) REFERENCES acore_custom.store_package_base (\`uuid\`);
-ALTER TABLE acore_custom.store_package_item ADD CONSTRAINT FKliyh2h1dvh86rsu89dupb7xfy FOREIGN KEY (\`item_base_uuid\`) REFERENCES acore_custom.store_package_base (\`uuid\`);
-
-GRANT ALL PRIVILEGES ON acore_custom.* TO 'spring'@'localhost';
-GRANT ALL PRIVILEGES ON acore_auth.* TO 'spring'@'localhost';
-GRANT ALL PRIVILEGES ON acore_characters.* TO 'spring'@'localhost';
-GRANT ALL PRIVILEGES ON acore_world.* TO 'spring'@'localhost';
-SQL
+```bash
+read -rsp "New Spring DB password: " WAPI_SPRING_PW && echo
+sed -e "s/\${SPRING_HOST}/localhost/g" -e "s/\${SPRING_PASSWORD}/$WAPI_SPRING_PW/g" \
+  sql/init.sql.template | sudo mysql
 ```
 
 ### 2: Install GMP (from project root, assuming Debian/Ubuntu)

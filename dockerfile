@@ -28,6 +28,7 @@ COPY --from=build /tmp/gmp-java/libjcl.so /lib/
 COPY --from=build /tmp/gmp-java/libnativegmp.so /lib/
 COPY --from=build /app/build/libs/*.jar app.jar
 
+COPY sql/init.sql.template /app/init.sql.template
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
