@@ -10,7 +10,7 @@ COPY html/ /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/templates/default.conf.template
 
 # Default index file (overridable via NGINX_INDEX env var)
-ENV NGINX_INDEX=index.html
+ENV NGINX_INDEX=page.html
 
 EXPOSE 80 443
 

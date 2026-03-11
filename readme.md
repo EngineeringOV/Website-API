@@ -32,11 +32,13 @@ WAPI_MAIL_PW="${WAPI_MAIL_PW:-password}"
 printf "Website URL [https://example.com]: " && read -r WAPI_WEBSITE_URL
 WAPI_WEBSITE_URL="${WAPI_WEBSITE_URL:-https://example.com}"
 WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
+printf "Subdomain (leave empty for none): " && read -r WAPI_SUBDOMAIN
 
 DOCKER_DB_ROOT_PASSWORD="$WAPI_DB_ROOT_PW" \
 DOCKER_SPRING_DB_PASSWORD="$WAPI_SPRING_DB_PW" \
 DOMAIN="$WAPI_DOMAIN" \
-  envsubst '${DOCKER_DB_ROOT_PASSWORD} ${DOCKER_SPRING_DB_PASSWORD} ${DOMAIN}' < .env.template > .env
+SUBDOMAIN="$WAPI_SUBDOMAIN" \
+  envsubst '${DOCKER_DB_ROOT_PASSWORD} ${DOCKER_SPRING_DB_PASSWORD} ${DOMAIN} ${SUBDOMAIN}' < .env.template > .env
 
 SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
 SPRING_DATASOURCE_URL="jdbc:mysql://ac-database:3306/acore_auth" \
@@ -112,6 +114,7 @@ WAPI_MAIL_PW="${WAPI_MAIL_PW:-password}"
 printf "Website URL [https://example.com]: " && read -r WAPI_WEBSITE_URL
 WAPI_WEBSITE_URL="${WAPI_WEBSITE_URL:-https://example.com}"
 WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
+printf "Subdomain (leave empty for none): " && read -r WAPI_SUBDOMAIN
 
 SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
 SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/acore_auth" \
