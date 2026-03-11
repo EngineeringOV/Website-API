@@ -10,28 +10,46 @@
 
 ## SET UP (One time setup)
 
+Requires `gettext` (`sudo apt install gettext` on Debian/Ubuntu).
+
 <details>
 <summary><strong>🐳 Docker Setup</strong></summary>
 
-### 1: Configure passwords
+### 1: Configuration
 
-Set your database passwords in the `.env` file:
+```bash
+printf "DB root password [password]: " && read -rs WAPI_DB_ROOT_PW && echo
+WAPI_DB_ROOT_PW="${WAPI_DB_ROOT_PW:-password}"
+printf "Spring DB password [password]: " && read -rs WAPI_SPRING_DB_PW && echo
+WAPI_SPRING_DB_PW="${WAPI_SPRING_DB_PW:-password}"
+printf "reCAPTCHA secret key: " && read -rs WAPI_CAPTCHA_PRIVATE && echo
+printf "Mail server password [password]: " && read -rs WAPI_MAIL_PW && echo
+WAPI_MAIL_PW="${WAPI_MAIL_PW:-password}"
+printf "Website URL [https://example.com]: " && read -r WAPI_WEBSITE_URL
+WAPI_WEBSITE_URL="${WAPI_WEBSITE_URL:-https://example.com}"
+WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
 
+DOCKER_DB_ROOT_PASSWORD="$WAPI_DB_ROOT_PW" \
+DOCKER_SPRING_DB_PASSWORD="$WAPI_SPRING_DB_PW" \
+DOMAIN="$WAPI_DOMAIN" \
+  envsubst '${DOCKER_DB_ROOT_PASSWORD} ${DOCKER_SPRING_DB_PASSWORD} ${DOMAIN}' < .env.template > .env
+
+SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
+SPRING_DATASOURCE_URL="jdbc:mysql://ac-database:3306/acore_auth" \
+GOOGLE_CAPTCHA_PRIVATE="$WAPI_CAPTCHA_PRIVATE" \
+SPRING_MAIL_PASSWORD="$WAPI_MAIL_PW" \
+API_WEBSITE_URL="$WAPI_WEBSITE_URL" \
+  envsubst '${SPRING_DATASOURCE_PASSWORD} ${SPRING_DATASOURCE_URL} ${GOOGLE_CAPTCHA_PRIVATE} ${SPRING_MAIL_PASSWORD} ${API_WEBSITE_URL}' \
+  < src/main/resources/application-prod.properties.template \
+  > src/main/resources/application-prod.properties
 ```
-DOCKER_DB_ROOT_PASSWORD=your_root_password
-DOCKER_SPRING_DB_PASSWORD=your_spring_password
-```
-
-The `entrypoint.sh` script automatically creates the `spring` MySQL user, schemas, and tables when the container starts using `sql/init.sql.template`. No manual SQL is needed.
 
 ### 2: HTTPS / SSL Setup (nginx only)
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
-read -rp "Domain (e.g. example.com): " WAPI_DOMAIN
 sudo apt install certbot
 sudo certbot certonly --standalone -d "$WAPI_DOMAIN"
-sed -i "s/DOMAIN=.*/DOMAIN=$WAPI_DOMAIN/" .env
 ```
 
 Renewal (if container is already running):
@@ -73,19 +91,36 @@ export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 
 </details>
 
-### 1: Create MySQL user & tables
-
-Choose a new password for the `spring` MySQL user. This is **not** an existing AzerothCore password — you are creating it now. It must match `spring.datasource.password` in your `.properties` file.
-
-Requires `gettext` for `envsubst` (`sudo apt install gettext` on Debian/Ubuntu).
+### 1: Configuration
 
 ```bash
-read -rsp "New Spring DB password: " WAPI_SPRING_PW && echo
-SPRING_HOST=localhost SPRING_PASSWORD="$WAPI_SPRING_PW" \
+printf "Spring DB password [password]: " && read -rs WAPI_SPRING_DB_PW && echo
+WAPI_SPRING_DB_PW="${WAPI_SPRING_DB_PW:-password}"
+printf "reCAPTCHA secret key: " && read -rs WAPI_CAPTCHA_PRIVATE && echo
+printf "Mail server password [password]: " && read -rs WAPI_MAIL_PW && echo
+WAPI_MAIL_PW="${WAPI_MAIL_PW:-password}"
+printf "Website URL [https://example.com]: " && read -r WAPI_WEBSITE_URL
+WAPI_WEBSITE_URL="${WAPI_WEBSITE_URL:-https://example.com}"
+WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
+
+SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
+SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/acore_auth" \
+GOOGLE_CAPTCHA_PRIVATE="$WAPI_CAPTCHA_PRIVATE" \
+SPRING_MAIL_PASSWORD="$WAPI_MAIL_PW" \
+API_WEBSITE_URL="$WAPI_WEBSITE_URL" \
+  envsubst '${SPRING_DATASOURCE_PASSWORD} ${SPRING_DATASOURCE_URL} ${GOOGLE_CAPTCHA_PRIVATE} ${SPRING_MAIL_PASSWORD} ${API_WEBSITE_URL}' \
+  < src/main/resources/application-prod.properties.template \
+  > src/main/resources/application-prod.properties
+```
+
+### 2: Create MySQL user & tables
+
+```bash
+SPRING_HOST=localhost SPRING_PASSWORD="$WAPI_SPRING_DB_PW" \
   envsubst '${SPRING_HOST} ${SPRING_PASSWORD}' < sql/init.sql.template | sudo mysql
 ```
 
-### 2: Install GMP (from project root, assuming Debian/Ubuntu)
+### 3: Install GMP (from project root, assuming Debian/Ubuntu)
 
 ```bash
 sudo apt install gcc libgmp-dev
@@ -103,14 +138,12 @@ sudo chmod 755 /lib/libnativegmp.so
 cd ../..
 ```
 
-### 3: HTTPS / SSL Setup (nginx only)
+### 4: HTTPS / SSL Setup (nginx only)
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
-read -rp "Domain (e.g. example.com): " WAPI_DOMAIN
 sudo apt install certbot
 sudo certbot certonly --standalone -d "$WAPI_DOMAIN"
-sed -i "s/DOMAIN=.*/DOMAIN=$WAPI_DOMAIN/" .env
 ```
 
 Renewal (if container is already running):
@@ -118,7 +151,7 @@ Renewal (if container is already running):
 sudo certbot renew --webroot -w /var/www/certbot
 ```
 
-### 4: Start
+### 5: Start
 
 ```bash
 ./gradlew bootWar
