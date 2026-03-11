@@ -8,29 +8,25 @@
 
 ---
 
-## Production Configuration
+## Configuration
 
 Requires `gettext` (`sudo apt install gettext` on Debian/Ubuntu).
 
 ```bash
+read -rsp "DB root password: " DOCKER_DB_ROOT_PASSWORD && echo
 read -rsp "Spring DB password: " SPRING_DATASOURCE_PASSWORD && echo
 read -rsp "reCAPTCHA secret key: " GOOGLE_CAPTCHA_PRIVATE && echo
 read -rsp "Mail server password: " SPRING_MAIL_PASSWORD && echo
 read -rp "Website URL (e.g. https://example.com): " API_WEBSITE_URL
-export SPRING_DATASOURCE_PASSWORD GOOGLE_CAPTCHA_PRIVATE SPRING_MAIL_PASSWORD API_WEBSITE_URL
+export DOCKER_DB_ROOT_PASSWORD SPRING_DATASOURCE_PASSWORD GOOGLE_CAPTCHA_PRIVATE SPRING_MAIL_PASSWORD API_WEBSITE_URL
+
+DOCKER_SPRING_DB_PASSWORD="$SPRING_DATASOURCE_PASSWORD" \
+  envsubst '${DOCKER_DB_ROOT_PASSWORD} ${DOCKER_SPRING_DB_PASSWORD}' < .env.template > .env
+
 envsubst '${SPRING_DATASOURCE_PASSWORD} ${GOOGLE_CAPTCHA_PRIVATE} ${SPRING_MAIL_PASSWORD} ${API_WEBSITE_URL}' \
   < src/main/resources/application-prod.properties.template \
   > src/main/resources/application-prod.properties
 ```
-
-Then activate the prod profile in `application.properties`:
-
-```properties
-spring.profiles.active=prod
-```
-
-The app validates these on startup and will fail if any are missing.
-`api.customization.website.url` is only required when `api.devMode=false`.
 
 ---
 
@@ -39,14 +35,7 @@ The app validates these on startup and will fail if any are missing.
 <details>
 <summary><strong>🐳 Docker Setup</strong></summary>
 
-### 1: Configure `.env`
-
-```
-DOCKER_DB_ROOT_PASSWORD=your_root_password
-DOCKER_SPRING_DB_PASSWORD=your_spring_password
-```
-
-### 2: HTTPS / SSL Setup (nginx only)
+### 1: HTTPS / SSL Setup (nginx only)
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
@@ -61,7 +50,7 @@ Renewal (if container is already running):
 sudo certbot renew --webroot -w /var/www/certbot
 ```
 
-### 3: Start
+### 2: Start
 
 ```bash
 docker compose up
@@ -96,8 +85,6 @@ export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 </details>
 
 ### 1: Create MySQL user & tables
-
-Requires `gettext` (`sudo apt install gettext` on Debian/Ubuntu).
 
 ```bash
 read -rsp "Spring DB password: " WAPI_SPRING_PW && echo
