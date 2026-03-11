@@ -28,11 +28,11 @@ public class GameMail {
     @Column(columnDefinition = "SMALLINT", name = "mailTemplateId")
     private short mailTemplateId;
 
-    @JoinColumn(name = "sender")
+    @JoinColumn(name = "sender", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @ManyToOne
     private Character sender;
 
-    @JoinColumn(name = "receiver")
+    @JoinColumn(name = "receiver", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @ManyToOne
     private Character receiver;
 

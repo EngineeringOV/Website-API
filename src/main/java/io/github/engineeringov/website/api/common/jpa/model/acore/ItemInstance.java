@@ -34,8 +34,8 @@ public class ItemInstance {
     @Column(columnDefinition = "INT", name = "duration")
     private int duration;
 
-    @Column(columnDefinition = "TINYINT", name = "charges")
-    private short charges;
+    @Column(columnDefinition = "TEXT", name = "charges")
+    private String charges;
 
     @Column(columnDefinition = "MEDIUMINT", name = "`flags`")
     private int flags;
