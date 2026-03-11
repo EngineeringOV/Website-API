@@ -18,11 +18,16 @@ Requires `gettext` (`sudo apt install gettext` on Debian/Ubuntu).
 ### 1: Configuration
 
 ```bash
-read -e -i "password" -rsp "DB root password: " WAPI_DB_ROOT_PW && echo
-read -e -i "password" -rsp "Spring DB password: " WAPI_SPRING_DB_PW && echo
-read -e -i "password" -rsp "reCAPTCHA secret key: " WAPI_CAPTCHA_PRIVATE && echo
-read -e -i "password" -rsp "Mail server password: " WAPI_MAIL_PW && echo
-read -e -i "https://example.com" -rp "Website URL: " WAPI_WEBSITE_URL
+read -rsp "DB root password [password]: " WAPI_DB_ROOT_PW && echo
+WAPI_DB_ROOT_PW="${WAPI_DB_ROOT_PW:-password}"
+read -rsp "Spring DB password [password]: " WAPI_SPRING_DB_PW && echo
+WAPI_SPRING_DB_PW="${WAPI_SPRING_DB_PW:-password}"
+read -rsp "reCAPTCHA secret key [password]: " WAPI_CAPTCHA_PRIVATE && echo
+WAPI_CAPTCHA_PRIVATE="${WAPI_CAPTCHA_PRIVATE:-password}"
+read -rsp "Mail server password [password]: " WAPI_MAIL_PW && echo
+WAPI_MAIL_PW="${WAPI_MAIL_PW:-password}"
+read -rp "Website URL [https://example.com]: " WAPI_WEBSITE_URL
+WAPI_WEBSITE_URL="${WAPI_WEBSITE_URL:-https://example.com}"
 WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
 
 DOCKER_DB_ROOT_PASSWORD="$WAPI_DB_ROOT_PW" \
@@ -89,10 +94,14 @@ export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 ### 1: Configuration
 
 ```bash
-read -e -i "password" -rsp "Spring DB password: " WAPI_SPRING_DB_PW && echo
-read -e -i "password" -rsp "reCAPTCHA secret key: " WAPI_CAPTCHA_PRIVATE && echo
-read -e -i "password" -rsp "Mail server password: " WAPI_MAIL_PW && echo
-read -e -i "https://example.com" -rp "Website URL: " WAPI_WEBSITE_URL
+read -rsp "Spring DB password [password]: " WAPI_SPRING_DB_PW && echo
+WAPI_SPRING_DB_PW="${WAPI_SPRING_DB_PW:-password}"
+read -rsp "reCAPTCHA secret key [password]: " WAPI_CAPTCHA_PRIVATE && echo
+WAPI_CAPTCHA_PRIVATE="${WAPI_CAPTCHA_PRIVATE:-password}"
+read -rsp "Mail server password [password]: " WAPI_MAIL_PW && echo
+WAPI_MAIL_PW="${WAPI_MAIL_PW:-password}"
+read -rp "Website URL [https://example.com]: " WAPI_WEBSITE_URL
+WAPI_WEBSITE_URL="${WAPI_WEBSITE_URL:-https://example.com}"
 WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
 
 SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
