@@ -8,29 +8,31 @@
 
 ---
 
-## Configuration
+## SET UP (One time setup)
+
+### Configuration
 
 Requires `gettext` (`sudo apt install gettext` on Debian/Ubuntu).
 
 ```bash
-read -rsp "DB root password: " DOCKER_DB_ROOT_PASSWORD && echo
-read -rsp "Spring DB password: " SPRING_DATASOURCE_PASSWORD && echo
-read -rsp "reCAPTCHA secret key: " GOOGLE_CAPTCHA_PRIVATE && echo
-read -rsp "Mail server password: " SPRING_MAIL_PASSWORD && echo
-read -rp "Website URL (e.g. https://example.com): " API_WEBSITE_URL
-export DOCKER_DB_ROOT_PASSWORD SPRING_DATASOURCE_PASSWORD GOOGLE_CAPTCHA_PRIVATE SPRING_MAIL_PASSWORD API_WEBSITE_URL
+read -rsp "DB root password: " WAPI_DB_ROOT_PW && echo
+read -rsp "Spring DB password: " WAPI_SPRING_DB_PW && echo
+read -rsp "reCAPTCHA secret key: " WAPI_CAPTCHA_PRIVATE && echo
+read -rsp "Mail server password: " WAPI_MAIL_PW && echo
+read -rp "Website URL (e.g. https://example.com): " WAPI_WEBSITE_URL
 
-DOCKER_SPRING_DB_PASSWORD="$SPRING_DATASOURCE_PASSWORD" \
+DOCKER_DB_ROOT_PASSWORD="$WAPI_DB_ROOT_PW" \
+DOCKER_SPRING_DB_PASSWORD="$WAPI_SPRING_DB_PW" \
   envsubst '${DOCKER_DB_ROOT_PASSWORD} ${DOCKER_SPRING_DB_PASSWORD}' < .env.template > .env
 
-envsubst '${SPRING_DATASOURCE_PASSWORD} ${GOOGLE_CAPTCHA_PRIVATE} ${SPRING_MAIL_PASSWORD} ${API_WEBSITE_URL}' \
+SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
+GOOGLE_CAPTCHA_PRIVATE="$WAPI_CAPTCHA_PRIVATE" \
+SPRING_MAIL_PASSWORD="$WAPI_MAIL_PW" \
+API_WEBSITE_URL="$WAPI_WEBSITE_URL" \
+  envsubst '${SPRING_DATASOURCE_PASSWORD} ${GOOGLE_CAPTCHA_PRIVATE} ${SPRING_MAIL_PASSWORD} ${API_WEBSITE_URL}' \
   < src/main/resources/application-prod.properties.template \
   > src/main/resources/application-prod.properties
 ```
-
----
-
-## SET UP (One time setup)
 
 <details>
 <summary><strong>🐳 Docker Setup</strong></summary>
@@ -87,8 +89,8 @@ export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 ### 1: Create MySQL user & tables
 
 ```bash
-read -rsp "Spring DB password: " WAPI_SPRING_PW && echo
-SPRING_HOST=localhost SPRING_PASSWORD="$WAPI_SPRING_PW" \
+read -rsp "Spring DB password: " WAPI_SPRING_DB_PW && echo
+SPRING_HOST=localhost SPRING_PASSWORD="$WAPI_SPRING_DB_PW" \
   envsubst '${SPRING_HOST} ${SPRING_PASSWORD}' < sql/init.sql.template | sudo mysql
 ```
 
