@@ -18,11 +18,11 @@ Requires `gettext` (`sudo apt install gettext` on Debian/Ubuntu).
 ### 1: Configuration
 
 ```bash
-read -rsp "DB root password: " WAPI_DB_ROOT_PW && echo
-read -rsp "Spring DB password: " WAPI_SPRING_DB_PW && echo
-read -rsp "reCAPTCHA secret key: " WAPI_CAPTCHA_PRIVATE && echo
-read -rsp "Mail server password: " WAPI_MAIL_PW && echo
-read -rp "Website URL (e.g. https://example.com): " WAPI_WEBSITE_URL
+read -e -i "password" -rsp "DB root password: " WAPI_DB_ROOT_PW && echo
+read -e -i "password" -rsp "Spring DB password: " WAPI_SPRING_DB_PW && echo
+read -e -i "password" -rsp "reCAPTCHA secret key: " WAPI_CAPTCHA_PRIVATE && echo
+read -e -i "password" -rsp "Mail server password: " WAPI_MAIL_PW && echo
+read -e -i "https://example.com" -rp "Website URL: " WAPI_WEBSITE_URL
 WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
 
 DOCKER_DB_ROOT_PASSWORD="$WAPI_DB_ROOT_PW" \
@@ -89,10 +89,10 @@ export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 ### 1: Configuration
 
 ```bash
-read -rsp "Spring DB password: " WAPI_SPRING_DB_PW && echo
-read -rsp "reCAPTCHA secret key: " WAPI_CAPTCHA_PRIVATE && echo
-read -rsp "Mail server password: " WAPI_MAIL_PW && echo
-read -rp "Website URL (e.g. https://example.com): " WAPI_WEBSITE_URL
+read -e -i "password" -rsp "Spring DB password: " WAPI_SPRING_DB_PW && echo
+read -e -i "password" -rsp "reCAPTCHA secret key: " WAPI_CAPTCHA_PRIVATE && echo
+read -e -i "password" -rsp "Mail server password: " WAPI_MAIL_PW && echo
+read -e -i "https://example.com" -rp "Website URL: " WAPI_WEBSITE_URL
 WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
 
 SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
