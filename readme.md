@@ -10,20 +10,17 @@
 
 ## Production Configuration
 
-Create `src/main/resources/application-prod.properties` and set the following:
+Requires `gettext` (`sudo apt install gettext` on Debian/Ubuntu).
 
 ```bash
-read -rsp "Spring DB password: " WAPI_DB_PW && echo
-read -rsp "reCAPTCHA secret key: " WAPI_CAPTCHA && echo
-read -rsp "Mail server password: " WAPI_MAIL_PW && echo
-read -rp "Website URL (e.g. https://example.com): " WAPI_URL
-
-cat > src/main/resources/application-prod.properties <<EOF
-spring.datasource.password=$WAPI_DB_PW
-google.captcha.private=$WAPI_CAPTCHA
-spring.mail.password=$WAPI_MAIL_PW
-api.customization.website.url=$WAPI_URL
-EOF
+read -rsp "Spring DB password: " SPRING_DATASOURCE_PASSWORD && echo
+read -rsp "reCAPTCHA secret key: " GOOGLE_CAPTCHA_PRIVATE && echo
+read -rsp "Mail server password: " SPRING_MAIL_PASSWORD && echo
+read -rp "Website URL (e.g. https://example.com): " API_WEBSITE_URL
+export SPRING_DATASOURCE_PASSWORD GOOGLE_CAPTCHA_PRIVATE SPRING_MAIL_PASSWORD API_WEBSITE_URL
+envsubst '${SPRING_DATASOURCE_PASSWORD} ${GOOGLE_CAPTCHA_PRIVATE} ${SPRING_MAIL_PASSWORD} ${API_WEBSITE_URL}' \
+  < src/main/resources/application-prod.properties.template \
+  > src/main/resources/application-prod.properties
 ```
 
 Then activate the prod profile in `application.properties`:
