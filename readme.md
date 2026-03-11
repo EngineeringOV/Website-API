@@ -89,6 +89,7 @@ SPRING_HOST=localhost SPRING_PASSWORD="$WAPI_SPRING_PW" \
 
 ```bash
 sudo apt install gcc libgmp-dev
+
 git clone https://github.com/EngineeringOV/GMP-java.git lib/GMP-java
 cd lib/GMP-java
 make
