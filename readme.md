@@ -56,7 +56,7 @@ API_WEBSITE_URL="$WAPI_WEBSITE_URL" \
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
-sudo apt install certbot
+sudo snap install --classic certbot
 sudo certbot certonly --standalone -d "$WAPI_DOMAIN"
 ```
 
@@ -157,7 +157,7 @@ cd ../..
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
-sudo apt install certbot
+sudo snap install --classic certbot
 sudo certbot certonly --standalone -d "$WAPI_DOMAIN"
 ```
 
