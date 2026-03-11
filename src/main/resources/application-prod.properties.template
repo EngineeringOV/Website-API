@@ -1,4 +1,9 @@
 spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+spring.datasource.url=${SPRING_DATASOURCE_URL}
+
 google.captcha.private=${GOOGLE_CAPTCHA_PRIVATE}
+
 spring.mail.password=${SPRING_MAIL_PASSWORD}
+
 api.customization.website.url=${API_WEBSITE_URL}
+api.devMode=false
