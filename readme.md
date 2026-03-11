@@ -23,6 +23,10 @@ WAPI_DB_ROOT_PW="${WAPI_DB_ROOT_PW:-password}"
 printf "Spring DB password [password]: " && read -r WAPI_SPRING_DB_PW && echo
 WAPI_SPRING_DB_PW="${WAPI_SPRING_DB_PW:-password}"
 printf "reCAPTCHA secret key: " && read -r WAPI_CAPTCHA_PRIVATE && echo
+printf "Mail username [hello@example.org]: " && read -r WAPI_MAIL_USER
+WAPI_MAIL_USER="${WAPI_MAIL_USER:-hello@example.org}"
+printf "Mail host [mail.gandi.net]: " && read -r WAPI_MAIL_HOST
+WAPI_MAIL_HOST="${WAPI_MAIL_HOST:-mail.gandi.net}"
 printf "Mail server password [password]: " && read -r WAPI_MAIL_PW && echo
 WAPI_MAIL_PW="${WAPI_MAIL_PW:-password}"
 printf "Website URL [https://example.com]: " && read -r WAPI_WEBSITE_URL
@@ -37,9 +41,11 @@ DOMAIN="$WAPI_DOMAIN" \
 SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
 SPRING_DATASOURCE_URL="jdbc:mysql://ac-database:3306/acore_auth" \
 GOOGLE_CAPTCHA_PRIVATE="$WAPI_CAPTCHA_PRIVATE" \
+SPRING_MAIL_USERNAME="$WAPI_MAIL_USER" \
 SPRING_MAIL_PASSWORD="$WAPI_MAIL_PW" \
+SPRING_MAIL_HOST="$WAPI_MAIL_HOST" \
 API_WEBSITE_URL="$WAPI_WEBSITE_URL" \
-  envsubst '${SPRING_DATASOURCE_PASSWORD} ${SPRING_DATASOURCE_URL} ${GOOGLE_CAPTCHA_PRIVATE} ${SPRING_MAIL_PASSWORD} ${API_WEBSITE_URL}' \
+  envsubst '${SPRING_DATASOURCE_PASSWORD} ${SPRING_DATASOURCE_URL} ${GOOGLE_CAPTCHA_PRIVATE} ${SPRING_MAIL_USERNAME} ${SPRING_MAIL_PASSWORD} ${SPRING_MAIL_HOST} ${API_WEBSITE_URL}' \
   < src/main/resources/application-prod.properties.template \
   > src/main/resources/application-prod.properties
 ```
@@ -97,6 +103,10 @@ export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 printf "Spring DB password [password]: " && read -r WAPI_SPRING_DB_PW && echo
 WAPI_SPRING_DB_PW="${WAPI_SPRING_DB_PW:-password}"
 printf "reCAPTCHA secret key: " && read -r WAPI_CAPTCHA_PRIVATE && echo
+printf "Mail username [hello@example.org]: " && read -r WAPI_MAIL_USER
+WAPI_MAIL_USER="${WAPI_MAIL_USER:-hello@example.org}"
+printf "Mail host [mail.gandi.net]: " && read -r WAPI_MAIL_HOST
+WAPI_MAIL_HOST="${WAPI_MAIL_HOST:-mail.gandi.net}"
 printf "Mail server password [password]: " && read -r WAPI_MAIL_PW && echo
 WAPI_MAIL_PW="${WAPI_MAIL_PW:-password}"
 printf "Website URL [https://example.com]: " && read -r WAPI_WEBSITE_URL
@@ -106,9 +116,11 @@ WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
 SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
 SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/acore_auth" \
 GOOGLE_CAPTCHA_PRIVATE="$WAPI_CAPTCHA_PRIVATE" \
+SPRING_MAIL_USERNAME="$WAPI_MAIL_USER" \
 SPRING_MAIL_PASSWORD="$WAPI_MAIL_PW" \
+SPRING_MAIL_HOST="$WAPI_MAIL_HOST" \
 API_WEBSITE_URL="$WAPI_WEBSITE_URL" \
-  envsubst '${SPRING_DATASOURCE_PASSWORD} ${SPRING_DATASOURCE_URL} ${GOOGLE_CAPTCHA_PRIVATE} ${SPRING_MAIL_PASSWORD} ${API_WEBSITE_URL}' \
+  envsubst '${SPRING_DATASOURCE_PASSWORD} ${SPRING_DATASOURCE_URL} ${GOOGLE_CAPTCHA_PRIVATE} ${SPRING_MAIL_USERNAME} ${SPRING_MAIL_PASSWORD} ${SPRING_MAIL_HOST} ${API_WEBSITE_URL}' \
   < src/main/resources/application-prod.properties.template \
   > src/main/resources/application-prod.properties
 ```

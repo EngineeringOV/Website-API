@@ -1,4 +1,4 @@
-spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
+spring.datasource.username=spring
 spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
 spring.datasource.url=${SPRING_DATASOURCE_URL}
 
@@ -7,7 +7,7 @@ google.captcha.private=${GOOGLE_CAPTCHA_PRIVATE}
 spring.mail.username=${SPRING_MAIL_USERNAME}
 spring.mail.password=${SPRING_MAIL_PASSWORD}
 spring.mail.host=${SPRING_MAIL_HOST}
-spring.mail.port=${SPRING_MAIL_PORT}
+spring.mail.port=465
 custom.mail.smtp.customerSupport=${spring.mail.username}
 spring.mail.properties.mail.smtp.auth=true
 
