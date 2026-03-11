@@ -23,10 +23,12 @@ read -rsp "Spring DB password: " WAPI_SPRING_DB_PW && echo
 read -rsp "reCAPTCHA secret key: " WAPI_CAPTCHA_PRIVATE && echo
 read -rsp "Mail server password: " WAPI_MAIL_PW && echo
 read -rp "Website URL (e.g. https://example.com): " WAPI_WEBSITE_URL
+WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
 
 DOCKER_DB_ROOT_PASSWORD="$WAPI_DB_ROOT_PW" \
 DOCKER_SPRING_DB_PASSWORD="$WAPI_SPRING_DB_PW" \
-  envsubst '${DOCKER_DB_ROOT_PASSWORD} ${DOCKER_SPRING_DB_PASSWORD}' < .env.template > .env
+DOMAIN="$WAPI_DOMAIN" \
+  envsubst '${DOCKER_DB_ROOT_PASSWORD} ${DOCKER_SPRING_DB_PASSWORD} ${DOMAIN}' < .env.template > .env
 
 SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
 GOOGLE_CAPTCHA_PRIVATE="$WAPI_CAPTCHA_PRIVATE" \
@@ -41,10 +43,8 @@ API_WEBSITE_URL="$WAPI_WEBSITE_URL" \
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
-read -rp "Domain (e.g. example.com): " WAPI_DOMAIN
 sudo apt install certbot
 sudo certbot certonly --standalone -d "$WAPI_DOMAIN"
-sed -i "s/DOMAIN=.*/DOMAIN=$WAPI_DOMAIN/" .env
 ```
 
 Renewal (if container is already running):
@@ -93,6 +93,7 @@ read -rsp "Spring DB password: " WAPI_SPRING_DB_PW && echo
 read -rsp "reCAPTCHA secret key: " WAPI_CAPTCHA_PRIVATE && echo
 read -rsp "Mail server password: " WAPI_MAIL_PW && echo
 read -rp "Website URL (e.g. https://example.com): " WAPI_WEBSITE_URL
+WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
 
 SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
 GOOGLE_CAPTCHA_PRIVATE="$WAPI_CAPTCHA_PRIVATE" \
@@ -132,10 +133,8 @@ cd ../..
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
-read -rp "Domain (e.g. example.com): " WAPI_DOMAIN
 sudo apt install certbot
 sudo certbot certonly --standalone -d "$WAPI_DOMAIN"
-sed -i "s/DOMAIN=.*/DOMAIN=$WAPI_DOMAIN/" .env
 ```
 
 Renewal (if container is already running):
