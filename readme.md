@@ -10,9 +10,12 @@
 
 ## SET UP (One time setup)
 
-### Configuration
-
 Requires `gettext` (`sudo apt install gettext` on Debian/Ubuntu).
+
+<details>
+<summary><strong>🐳 Docker Setup</strong></summary>
+
+### 1: Configuration
 
 ```bash
 read -rsp "DB root password: " WAPI_DB_ROOT_PW && echo
@@ -34,10 +37,7 @@ API_WEBSITE_URL="$WAPI_WEBSITE_URL" \
   > src/main/resources/application-prod.properties
 ```
 
-<details>
-<summary><strong>🐳 Docker Setup</strong></summary>
-
-### 1: HTTPS / SSL Setup (nginx only)
+### 2: HTTPS / SSL Setup (nginx only)
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
@@ -52,7 +52,7 @@ Renewal (if container is already running):
 sudo certbot renew --webroot -w /var/www/certbot
 ```
 
-### 2: Start
+### 3: Start
 
 ```bash
 docker compose up
@@ -86,15 +86,31 @@ export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 
 </details>
 
-### 1: Create MySQL user & tables
+### 1: Configuration
 
 ```bash
 read -rsp "Spring DB password: " WAPI_SPRING_DB_PW && echo
+read -rsp "reCAPTCHA secret key: " WAPI_CAPTCHA_PRIVATE && echo
+read -rsp "Mail server password: " WAPI_MAIL_PW && echo
+read -rp "Website URL (e.g. https://example.com): " WAPI_WEBSITE_URL
+
+SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
+GOOGLE_CAPTCHA_PRIVATE="$WAPI_CAPTCHA_PRIVATE" \
+SPRING_MAIL_PASSWORD="$WAPI_MAIL_PW" \
+API_WEBSITE_URL="$WAPI_WEBSITE_URL" \
+  envsubst '${SPRING_DATASOURCE_PASSWORD} ${GOOGLE_CAPTCHA_PRIVATE} ${SPRING_MAIL_PASSWORD} ${API_WEBSITE_URL}' \
+  < src/main/resources/application-prod.properties.template \
+  > src/main/resources/application-prod.properties
+```
+
+### 2: Create MySQL user & tables
+
+```bash
 SPRING_HOST=localhost SPRING_PASSWORD="$WAPI_SPRING_DB_PW" \
   envsubst '${SPRING_HOST} ${SPRING_PASSWORD}' < sql/init.sql.template | sudo mysql
 ```
 
-### 2: Install GMP (from project root, assuming Debian/Ubuntu)
+### 3: Install GMP (from project root, assuming Debian/Ubuntu)
 
 ```bash
 sudo apt install gcc libgmp-dev
@@ -112,7 +128,7 @@ sudo chmod 755 /lib/libnativegmp.so
 cd ../..
 ```
 
-### 3: HTTPS / SSL Setup (nginx only)
+### 4: HTTPS / SSL Setup (nginx only)
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
@@ -127,7 +143,7 @@ Renewal (if container is already running):
 sudo certbot renew --webroot -w /var/www/certbot
 ```
 
-### 4: Start
+### 5: Start
 
 ```bash
 ./gradlew bootWar
