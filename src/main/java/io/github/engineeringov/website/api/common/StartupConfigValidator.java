@@ -38,7 +38,7 @@ public class StartupConfigValidator {
         if (!devMode && mailPassword.isBlank()) {
             missingProperties.add("spring.mail.password");
         }
-        if (captchaPrivateKey.isBlank()) {
+        if (!devMode && captchaPrivateKey.isBlank()) {
             missingProperties.add("google.captcha.private");
         }
         if (!devMode && websiteUrl.isBlank()) {
