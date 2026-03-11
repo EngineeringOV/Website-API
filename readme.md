@@ -18,15 +18,15 @@ Requires `gettext` (`sudo apt install gettext` on Debian/Ubuntu).
 ### 1: Configuration
 
 ```bash
-read -rsp "DB root password [password]: " WAPI_DB_ROOT_PW && echo
+printf "DB root password [password]: " && read -rs WAPI_DB_ROOT_PW && echo
 WAPI_DB_ROOT_PW="${WAPI_DB_ROOT_PW:-password}"
-read -rsp "Spring DB password [password]: " WAPI_SPRING_DB_PW && echo
+printf "Spring DB password [password]: " && read -rs WAPI_SPRING_DB_PW && echo
 WAPI_SPRING_DB_PW="${WAPI_SPRING_DB_PW:-password}"
-read -rsp "reCAPTCHA secret key [password]: " WAPI_CAPTCHA_PRIVATE && echo
+printf "reCAPTCHA secret key [password]: " && read -rs WAPI_CAPTCHA_PRIVATE && echo
 WAPI_CAPTCHA_PRIVATE="${WAPI_CAPTCHA_PRIVATE:-password}"
-read -rsp "Mail server password [password]: " WAPI_MAIL_PW && echo
+printf "Mail server password [password]: " && read -rs WAPI_MAIL_PW && echo
 WAPI_MAIL_PW="${WAPI_MAIL_PW:-password}"
-read -rp "Website URL [https://example.com]: " WAPI_WEBSITE_URL
+printf "Website URL [https://example.com]: " && read -r WAPI_WEBSITE_URL
 WAPI_WEBSITE_URL="${WAPI_WEBSITE_URL:-https://example.com}"
 WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
 
@@ -94,13 +94,13 @@ export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 ### 1: Configuration
 
 ```bash
-read -rsp "Spring DB password [password]: " WAPI_SPRING_DB_PW && echo
+printf "Spring DB password [password]: " && read -rs WAPI_SPRING_DB_PW && echo
 WAPI_SPRING_DB_PW="${WAPI_SPRING_DB_PW:-password}"
-read -rsp "reCAPTCHA secret key [password]: " WAPI_CAPTCHA_PRIVATE && echo
+printf "reCAPTCHA secret key [password]: " && read -rs WAPI_CAPTCHA_PRIVATE && echo
 WAPI_CAPTCHA_PRIVATE="${WAPI_CAPTCHA_PRIVATE:-password}"
-read -rsp "Mail server password [password]: " WAPI_MAIL_PW && echo
+printf "Mail server password [password]: " && read -rs WAPI_MAIL_PW && echo
 WAPI_MAIL_PW="${WAPI_MAIL_PW:-password}"
-read -rp "Website URL [https://example.com]: " WAPI_WEBSITE_URL
+printf "Website URL [https://example.com]: " && read -r WAPI_WEBSITE_URL
 WAPI_WEBSITE_URL="${WAPI_WEBSITE_URL:-https://example.com}"
 WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
 
