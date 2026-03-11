@@ -22,8 +22,7 @@ printf "DB root password [password]: " && read -rs WAPI_DB_ROOT_PW && echo
 WAPI_DB_ROOT_PW="${WAPI_DB_ROOT_PW:-password}"
 printf "Spring DB password [password]: " && read -rs WAPI_SPRING_DB_PW && echo
 WAPI_SPRING_DB_PW="${WAPI_SPRING_DB_PW:-password}"
-printf "reCAPTCHA secret key [password]: " && read -rs WAPI_CAPTCHA_PRIVATE && echo
-WAPI_CAPTCHA_PRIVATE="${WAPI_CAPTCHA_PRIVATE:-password}"
+printf "reCAPTCHA secret key: " && read -rs WAPI_CAPTCHA_PRIVATE && echo
 printf "Mail server password [password]: " && read -rs WAPI_MAIL_PW && echo
 WAPI_MAIL_PW="${WAPI_MAIL_PW:-password}"
 printf "Website URL [https://example.com]: " && read -r WAPI_WEBSITE_URL
@@ -96,8 +95,7 @@ export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 ```bash
 printf "Spring DB password [password]: " && read -rs WAPI_SPRING_DB_PW && echo
 WAPI_SPRING_DB_PW="${WAPI_SPRING_DB_PW:-password}"
-printf "reCAPTCHA secret key [password]: " && read -rs WAPI_CAPTCHA_PRIVATE && echo
-WAPI_CAPTCHA_PRIVATE="${WAPI_CAPTCHA_PRIVATE:-password}"
+printf "reCAPTCHA secret key: " && read -rs WAPI_CAPTCHA_PRIVATE && echo
 printf "Mail server password [password]: " && read -rs WAPI_MAIL_PW && echo
 WAPI_MAIL_PW="${WAPI_MAIL_PW:-password}"
 printf "Website URL [https://example.com]: " && read -r WAPI_WEBSITE_URL
