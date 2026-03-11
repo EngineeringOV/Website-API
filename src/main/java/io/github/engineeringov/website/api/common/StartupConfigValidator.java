@@ -35,10 +35,10 @@ public class StartupConfigValidator {
         if (datasourcePassword.isBlank() || datasourcePassword.equals("!!REPLACE-ME!!")) {
             missingProperties.add("spring.datasource.password");
         }
-        if (mailPassword.isBlank()) {
+        if (!devMode && mailPassword.isBlank()) {
             missingProperties.add("spring.mail.password");
         }
-        if (captchaPrivateKey.isBlank()) {
+        if (!devMode && captchaPrivateKey.isBlank()) {
             missingProperties.add("google.captcha.private");
         }
         if (!devMode && websiteUrl.isBlank()) {
