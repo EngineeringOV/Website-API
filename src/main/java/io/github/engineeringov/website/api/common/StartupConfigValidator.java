@@ -22,6 +22,12 @@ public class StartupConfigValidator {
     @Value("${google.captcha.private:}")
     private String captchaPrivateKey;
 
+    @Value("${api.customization.website.url:}")
+    private String websiteUrl;
+
+    @Value("${api.devMode:false}")
+    private boolean devMode;
+
     @EventListener(ApplicationReadyEvent.class)
     public void validateRequiredProperties() {
         List<String> missingProperties = new ArrayList<>();
@@ -34,6 +40,9 @@ public class StartupConfigValidator {
         }
         if (captchaPrivateKey.isBlank()) {
             missingProperties.add("google.captcha.private");
+        }
+        if (!devMode && websiteUrl.isBlank()) {
+            missingProperties.add("api.customization.website.url");
         }
 
         if (!missingProperties.isEmpty()) {

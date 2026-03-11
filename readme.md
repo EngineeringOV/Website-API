@@ -8,21 +8,46 @@
 
 ---
 
+## Production Configuration
+
+Create `src/main/resources/application-prod.properties` and set the following:
+
+```bash
+read -rsp "Spring DB password: " WAPI_DB_PW && echo
+read -rsp "reCAPTCHA secret key: " WAPI_CAPTCHA && echo
+read -rsp "Mail server password: " WAPI_MAIL_PW && echo
+read -rp "Website URL (e.g. https://example.com): " WAPI_URL
+
+cat > src/main/resources/application-prod.properties <<EOF
+spring.datasource.password=$WAPI_DB_PW
+google.captcha.private=$WAPI_CAPTCHA
+spring.mail.password=$WAPI_MAIL_PW
+api.customization.website.url=$WAPI_URL
+EOF
+```
+
+Then activate the prod profile in `application.properties`:
+
+```properties
+spring.profiles.active=prod
+```
+
+The app validates these on startup and will fail if any are missing.
+`api.customization.website.url` is only required when `api.devMode=false`.
+
+---
+
 ## SET UP (One time setup)
 
 <details>
 <summary><strong>🐳 Docker Setup</strong></summary>
 
-### 1: Configure passwords
-
-Set your database passwords in the `.env` file:
+### 1: Configure `.env`
 
 ```
 DOCKER_DB_ROOT_PASSWORD=your_root_password
 DOCKER_SPRING_DB_PASSWORD=your_spring_password
 ```
-
-The `entrypoint.sh` script automatically creates the `spring` MySQL user, schemas, and tables when the container starts using `sql/init.sql.template`. No manual SQL is needed.
 
 ### 2: HTTPS / SSL Setup (nginx only)
 
@@ -75,12 +100,10 @@ export JAVA_HOME=/usr/lib/jvm/jdk-18.0.2.1
 
 ### 1: Create MySQL user & tables
 
-Choose a new password for the `spring` MySQL user. This is **not** an existing AzerothCore password — you are creating it now. It must match `spring.datasource.password` in your `.properties` file.
-
-Requires `gettext` for `envsubst` (`sudo apt install gettext` on Debian/Ubuntu).
+Requires `gettext` (`sudo apt install gettext` on Debian/Ubuntu).
 
 ```bash
-read -rsp "New Spring DB password: " WAPI_SPRING_PW && echo
+read -rsp "Spring DB password: " WAPI_SPRING_PW && echo
 SPRING_HOST=localhost SPRING_PASSWORD="$WAPI_SPRING_PW" \
   envsubst '${SPRING_HOST} ${SPRING_PASSWORD}' < sql/init.sql.template | sudo mysql
 ```
