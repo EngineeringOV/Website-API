@@ -24,6 +24,7 @@ public class StoreAccountTokens {
     private String uuid;
 
     @OneToOne
+    @JoinColumn(name = "account_id", columnDefinition = "INT UNSIGNED", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     public Account account;
     @Column(name = "vote_token")
     public int voteToken = 0;
