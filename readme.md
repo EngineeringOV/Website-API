@@ -34,11 +34,18 @@ WAPI_WEBSITE_URL="${WAPI_WEBSITE_URL:-https://example.com}"
 WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
 printf "Subdomain (leave empty for none): " && read -r WAPI_SUBDOMAIN
 
+if [ -n "$WAPI_SUBDOMAIN" ]; then
+  WAPI_CERT_DOMAIN="${WAPI_SUBDOMAIN}.${WAPI_DOMAIN}"
+else
+  WAPI_CERT_DOMAIN="$WAPI_DOMAIN"
+fi
+
 DOCKER_DB_ROOT_PASSWORD="$WAPI_DB_ROOT_PW" \
 DOCKER_SPRING_DB_PASSWORD="$WAPI_SPRING_DB_PW" \
 DOMAIN="$WAPI_DOMAIN" \
 SUBDOMAIN="$WAPI_SUBDOMAIN" \
-  envsubst '${DOCKER_DB_ROOT_PASSWORD} ${DOCKER_SPRING_DB_PASSWORD} ${DOMAIN} ${SUBDOMAIN}' < .env.template > .env
+CERT_DOMAIN="$WAPI_CERT_DOMAIN" \
+  envsubst '${DOCKER_DB_ROOT_PASSWORD} ${DOCKER_SPRING_DB_PASSWORD} ${DOMAIN} ${SUBDOMAIN} ${CERT_DOMAIN}' < .env.template > .env
 
 SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
 SPRING_DATASOURCE_URL="jdbc:mysql://ac-database:3306/acore_auth" \
@@ -56,8 +63,8 @@ API_WEBSITE_URL="$WAPI_WEBSITE_URL" \
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
-sudo apt install certbot
-sudo certbot certonly --standalone -d "$WAPI_DOMAIN"
+sudo snap install --classic certbot
+sudo certbot certonly --standalone -d "$WAPI_CERT_DOMAIN"
 ```
 
 Renewal (if container is already running):
@@ -116,6 +123,12 @@ WAPI_WEBSITE_URL="${WAPI_WEBSITE_URL:-https://example.com}"
 WAPI_DOMAIN=$(echo "$WAPI_WEBSITE_URL" | sed 's|https\?://||')
 printf "Subdomain (leave empty for none): " && read -r WAPI_SUBDOMAIN
 
+if [ -n "$WAPI_SUBDOMAIN" ]; then
+  WAPI_CERT_DOMAIN="${WAPI_SUBDOMAIN}.${WAPI_DOMAIN}"
+else
+  WAPI_CERT_DOMAIN="$WAPI_DOMAIN"
+fi
+
 SPRING_DATASOURCE_PASSWORD="$WAPI_SPRING_DB_PW" \
 SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/acore_auth" \
 GOOGLE_CAPTCHA_PRIVATE="$WAPI_CAPTCHA_PRIVATE" \
@@ -157,8 +170,8 @@ cd ../..
 
 Install Certbot and issue a certificate (before starting nginx for the first time):
 ```bash
-sudo apt install certbot
-sudo certbot certonly --standalone -d "$WAPI_DOMAIN"
+sudo snap install --classic certbot
+sudo certbot certonly --standalone -d "$WAPI_CERT_DOMAIN"
 ```
 
 Renewal (if container is already running):

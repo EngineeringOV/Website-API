@@ -21,7 +21,7 @@ public class Account implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "INT", name = "id")
+    @Column(columnDefinition = "INT UNSIGNED", name = "id")
     private int id;
 
     @Column(columnDefinition = "VARCHAR(32)", name = "username")

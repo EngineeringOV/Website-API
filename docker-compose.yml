@@ -27,6 +27,7 @@ services:
       - NGINX_INDEX=${NGINX_INDEX:-page.html}
       - DOMAIN=${DOMAIN}
       - SUBDOMAIN=${SUBDOMAIN}
+      - CERT_DOMAIN=${CERT_DOMAIN}
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /var/www/certbot:/var/www/certbot:ro
