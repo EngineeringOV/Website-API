@@ -29,6 +29,7 @@ services:
       - SUBDOMAIN=${SUBDOMAIN}
       - CERT_DOMAIN=${CERT_DOMAIN}
     volumes:
+      - ./src/main/html/website-container/html:/usr/share/nginx/html:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /var/www/certbot:/var/www/certbot:ro
     networks:
