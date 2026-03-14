@@ -47,6 +47,8 @@ public class AccountEndpoint {
     private final EMailService eMailService;
     @Value("${api.customization.website.resetPasswordUrl}")
     private String resetUrl;
+    @Value("${api.customization.account.expansion:2}")
+    private short accountExpansion;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -105,6 +107,7 @@ public class AccountEndpoint {
             WowCryptoInfo wowCryptoInfo = CryptographyUtils.calculateVerifierAndSalt(username, password);
             Account newAccount = new Account(username, wowCryptoInfo, email);
             newAccount.setRecruiter(recruiterId);
+            newAccount.setExpansion(accountExpansion);
             accountRepository.save(newAccount);
 
             return ResponseEntity.status(HttpStatus.CREATED).body("Success: Account created!");
