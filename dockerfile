@@ -1,11 +1,11 @@
-FROM eclipse-temurin:18-jdk AS build
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 RUN apt-get update && apt-get install -y gcc libgmp-dev make git wget unzip && rm -rf /var/lib/apt/lists/*
 
-RUN wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip -O /tmp/gradle.zip \
+RUN wget -q https://services.gradle.org/distributions/gradle-8.14.3-bin.zip -O /tmp/gradle.zip \
     && unzip -q /tmp/gradle.zip -d /opt \
     && rm /tmp/gradle.zip
-ENV PATH="/opt/gradle-8.5/bin:${PATH}"
+ENV PATH="/opt/gradle-8.14.3/bin:${PATH}"
 ENV GRADLE_OPTS="-Dorg.gradle.jvmargs=-Xmx512m -Dorg.gradle.caching=false"
 
 RUN git clone https://github.com/EngineeringOV/GMP-java.git /tmp/gmp-java \
@@ -20,7 +20,7 @@ RUN gradle dependencies --no-daemon --no-build-cache || true
 COPY src src
 RUN gradle bootJar --no-daemon --no-build-cache
 
-FROM eclipse-temurin:18-jre
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 RUN apt-get update && apt-get install -y libgmp10 default-mysql-client gettext-base && rm -rf /var/lib/apt/lists/*
 
