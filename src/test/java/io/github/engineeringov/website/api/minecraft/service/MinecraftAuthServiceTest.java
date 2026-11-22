@@ -187,6 +187,10 @@ class MinecraftAuthServiceTest {
         assertEquals("Bob(1)", auth.profile(ours, true).orElseThrow().get("name"));
         when(mojang.profile(eq(REAL_BOB), anyBoolean())).thenReturn(Optional.of(real(REAL_BOB, "Bob")));
         assertEquals("Bob(2)", auth.profile(REAL_BOB, true).orElseThrow().get("name"));
+        // what the server plugin asks for
+        assertEquals("Bob(1)", auth.shownName(ours, "Bob"));
+        assertEquals("Bob(2)", auth.shownName(REAL_BOB, "Bob"));
+        assertEquals("Steve", auth.shownName("5555aaaa5555aaaa5555aaaa5555aaaa", "Steve"));
     }
 
     @Test

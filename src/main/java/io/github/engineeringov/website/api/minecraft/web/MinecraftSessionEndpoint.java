@@ -63,6 +63,12 @@ public class MinecraftSessionEndpoint {
         return auth.byNames(names);
     }
 
+    /** For the name-clash server plugin: {"name": "Bob(2)"}. */
+    @GetMapping("/plugin/name")
+    public Map<String, Object> shownName(@RequestParam String id, @RequestParam String name) {
+        return Map.of("name", auth.shownName(id, name));
+    }
+
     private static ResponseEntity<Map<String, Object>> of(java.util.Optional<Map<String, Object>> m) {
         return m.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
     }

@@ -187,6 +187,19 @@ public class MinecraftAuthService {
         return found;
     }
 
+    /**
+     * The name a joined player should be shown with, for the server plugin: Name(1) for ours and
+     * Name(2)... for real accounts once their names clash, else the name unchanged.
+     * Database only, so a join never waits on Mojang.
+     */
+    public String shownName(String id, String name) {
+        String norm = normalizeId(id);
+        if (norm == null || blank(name)) throw YggdrasilException.badRequest("id and name are required.");
+        Optional<Profile> ours = store.profileById(norm);
+        if (ours.isPresent()) return displayName(ours.get());
+        return store.clash(name, norm).map(c -> MinecraftNames.withSuffix(name, c.suffix())).orElse(name);
+    }
+
     // --- helpers ---------------------------------------------------------------------------
 
     private Optional<Map<String, Object>> bySuffixedName(MinecraftNames.Suffixed s) {

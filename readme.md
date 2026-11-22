@@ -242,9 +242,11 @@ Every Minecraft version reads a different subset of these, so set them all. Test
 
 - Minecraft name = the WoW account name (`BOB` shows as `Bob`). Accounts whose name can't be a Minecraft name
   (`john.doe`: only 3-16 letters, digits and `_`) pick one once in the launcher.
-- Our accounts own their names: a real account with the same name is refused (`name-clash=refuse`).
-  Minecraft always uses the name the player's client sent, so renaming the real one (`Bob(2)`) needs a server plugin;
-  `name-clash=suffix` records those names for one.
+- Our accounts own their names: a real account with the same name is refused (`name-clash=refuse`, the default).
+- With `name-clash=suffix` and mc-launch's Paper plugin (`mc-launch-names.jar`, in mc-launch's `plugin/` folder) it
+  plays as `Bob(2)` instead, and ours as `Bob(1)` from then on. Minecraft always uses the name the player's client
+  sent, so only a server plugin can rename; the plugin asks `GET /minecraft/plugin/name?id=&name=`.
+  Without the plugin keep `refuse`, or two players would share a name.
 - Banned (`account_banned`) or locked accounts can't log in. Custom accounts use the default skin.
 
 ### Endpoints
