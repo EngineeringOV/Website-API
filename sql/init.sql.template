@@ -66,6 +66,7 @@ ALTER TABLE acore_custom.store_package_item ADD CONSTRAINT FKliyh2h1dvh86rsu89du
 
 -- Create application user and grant privileges
 CREATE USER IF NOT EXISTS 'spring'@'${SPRING_HOST}' IDENTIFIED BY '${SPRING_PASSWORD}';
+ALTER USER 'spring'@'${SPRING_HOST}' IDENTIFIED BY '${SPRING_PASSWORD}';
 GRANT ALL PRIVILEGES ON acore_custom.* TO 'spring'@'${SPRING_HOST}';
 GRANT ALL PRIVILEGES ON acore_auth.* TO 'spring'@'${SPRING_HOST}';
 GRANT ALL PRIVILEGES ON acore_characters.* TO 'spring'@'${SPRING_HOST}';
