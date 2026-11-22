@@ -189,3 +189,66 @@ java -jar build/libs/API.war
 </details>
 
 ---
+
+## Minecraft accounts (optional)
+
+Players can log in to Minecraft with their AzerothCore account, through
+[mc-launch](https://github.com/EngineeringOV/mc-launch). Real (paid) Minecraft accounts keep working on the same server.
+Off by default: with the flag off no Minecraft endpoint, table or bean exists.
+
+### Enable
+
+```properties
+minecraft.auth.enabled=true
+minecraft.auth.name=My Server                    # shown in the launcher
+minecraft.auth.game-server=play.example.com:25565 # optional, default: this website's host
+#minecraft.auth.public-url=https://example.com/api/minecraft  # default: website url + /api/minecraft
+#minecraft.auth.mojang-fallback=false            # only our accounts may join
+#minecraft.auth.name-clash=refuse                # see "Names"
+```
+
+With Docker, set `MINECRAFT_AUTH_ENABLED=true` (and optionally `MINECRAFT_AUTH_NAME`, `MINECRAFT_GAME_SERVER`) in `.env`.
+The `acore_custom.mc_*` tables are created at startup (`sql/minecraft.sql.template` to create them by hand,
+`minecraft.auth.create-tables=false` to skip).
+
+### Players
+
+In mc-launch: *Add account*, auth server `example.com` (or the full `https://example.com/api/minecraft`),
+WoW account name and password. The launcher adds the game server to the in-game server list.
+
+### Game server
+
+Start it with `online-mode=true`, `enforce-secure-profile=false` and these JVM flags (B = `https://example.com/api/minecraft`):
+
+```
+-Dminecraft.api.env=custom
+-Dminecraft.api.discovery.host=B/discovery
+-Dminecraft.api.auth.host=B/authserver
+-Dminecraft.api.account.host=B/account
+-Dminecraft.api.session.host=B
+-Dminecraft.api.services.host=B/services
+-Dminecraft.api.profiles.host=B/services
+```
+
+Every Minecraft version reads a different subset of these, so set them all. Tested with Paper 1.20.4, 1.21.11 and 26.3.
+
+### How a join is checked
+
+1. A player who logged in through mc-launch: their client announced the join here, so they are let in.
+2. Otherwise, if `mojang-fallback` is on, Mojang is asked: a real account is let in.
+3. Otherwise they are refused.
+
+### Names
+
+- Minecraft name = the WoW account name (`BOB` shows as `Bob`). Accounts whose name can't be a Minecraft name
+  (`john.doe`: only 3-16 letters, digits and `_`) pick one once in the launcher.
+- Our accounts own their names: a real account with the same name is refused (`name-clash=refuse`).
+  Minecraft always uses the name the player's client sent, so renaming the real one (`Bob(2)`) needs a server plugin;
+  `name-clash=suffix` records those names for one.
+- Banned (`account_banned`) or locked accounts can't log in. Custom accounts use the default skin.
+
+### Endpoints
+
+All under `/minecraft` (`/api/minecraft` behind nginx), in Mojang's formats: `authserver/{authenticate,refresh,validate,invalidate}`,
+`profile/name`, `session/minecraft/{join,hasJoined,profile/<id>}`, name lookups, `services/*` and `discovery`.
+Tokens are stored hashed (SHA-256); failed logins are limited per IP and account.

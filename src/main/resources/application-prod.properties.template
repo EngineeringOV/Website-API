@@ -13,3 +13,9 @@ spring.mail.properties.mail.smtp.auth=true
 
 api.customization.website.url=${API_WEBSITE_URL}
 api.devMode=false
+
+# Minecraft accounts (optional): players log in to Minecraft with their WoW account
+minecraft.auth.enabled=${MINECRAFT_AUTH_ENABLED:false}
+minecraft.auth.name=${MINECRAFT_AUTH_NAME:Minecraft}
+# host[:port] players connect to; empty = this website's host
+minecraft.auth.game-server=${MINECRAFT_GAME_SERVER:}
