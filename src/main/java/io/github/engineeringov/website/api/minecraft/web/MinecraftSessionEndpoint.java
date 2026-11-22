@@ -63,10 +63,13 @@ public class MinecraftSessionEndpoint {
         return auth.byNames(names);
     }
 
-    /** For the name-clash server plugin: {"name": "Bob(2)"}. */
+    /**
+     * For mc-launch's server plugin: {"name": "Bob(2)", "own": false}. own = one of our accounts (the plugin can
+     * whitelist those, or let them skip the join password).
+     */
     @GetMapping("/plugin/name")
     public Map<String, Object> shownName(@RequestParam String id, @RequestParam String name) {
-        return Map.of("name", auth.shownName(id, name));
+        return Map.of("name", auth.shownName(id, name), "own", auth.isOwn(id));
     }
 
     private static ResponseEntity<Map<String, Object>> of(java.util.Optional<Map<String, Object>> m) {

@@ -191,6 +191,9 @@ class MinecraftAuthServiceTest {
         assertEquals("Bob(1)", auth.shownName(ours, "Bob"));
         assertEquals("Bob(2)", auth.shownName(REAL_BOB, "Bob"));
         assertEquals("Steve", auth.shownName("5555aaaa5555aaaa5555aaaa5555aaaa", "Steve"));
+        assertTrue(auth.isOwn(ours));
+        assertFalse(auth.isOwn(REAL_BOB));
+        assertFalse(auth.isOwn("not-a-uuid"));
     }
 
     @Test

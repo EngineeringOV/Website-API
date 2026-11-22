@@ -200,6 +200,12 @@ public class MinecraftAuthService {
         return store.clash(name, norm).map(c -> MinecraftNames.withSuffix(name, c.suffix())).orElse(name);
     }
 
+    /** True when the id is one of our accounts (only we hand out those UUIDs; real accounts have Mojang's). */
+    public boolean isOwn(String id) {
+        String norm = normalizeId(id);
+        return norm != null && store.profileById(norm).isPresent();
+    }
+
     // --- helpers ---------------------------------------------------------------------------
 
     private Optional<Map<String, Object>> bySuffixedName(MinecraftNames.Suffixed s) {

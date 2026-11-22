@@ -246,7 +246,8 @@ Every Minecraft version reads a different subset of these, so set them all. Test
 - Our accounts own their names: a real account with the same name is refused (`name-clash=refuse`, the default).
 - With `name-clash=suffix` and mc-launch's Paper plugin (`mc-launch-names.jar`, in mc-launch's `plugin/` folder) it
   plays as `Bob(2)` instead, and ours as `Bob(1)` from then on. Minecraft always uses the name the player's client
-  sent, so only a server plugin can rename; the plugin asks `GET /minecraft/plugin/name?id=&name=`.
+  sent, so only a server plugin can rename; the plugin asks `GET /minecraft/plugin/name?id=&name=`, which also says
+  whether the player is one of our accounts (`own`): the plugin can whitelist those automatically or let them skip a join password.
   Without the plugin keep `refuse`, or two players would share a name.
 - Banned (`account_banned`) or locked accounts can't log in. Custom accounts use the default skin.
 
