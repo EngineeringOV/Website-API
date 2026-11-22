@@ -43,6 +43,8 @@ public class MinecraftAuthEndpoint {
         m.put("gameServer", gameServer());
         m.put("discovery", props.getPublicUrl() + "/discovery");
         m.put("realAccounts", props.isMojangFallback());
+        // tools like RealmMover check this: "suffix" needs mc-launch's name plugin on the game server
+        m.put("nameClash", props.getNameClash().name().toLowerCase(java.util.Locale.ROOT));
         return m;
     }
 
