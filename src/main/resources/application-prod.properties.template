@@ -19,3 +19,5 @@ minecraft.auth.enabled=${MINECRAFT_AUTH_ENABLED:false}
 minecraft.auth.name=${MINECRAFT_AUTH_NAME:Minecraft}
 # host[:port] players connect to; empty = this website's host
 minecraft.auth.game-server=${MINECRAFT_GAME_SERVER:}
+# refuse, or suffix with mc-launch's Paper plugin (real account with one of our names plays as Name(2))
+minecraft.auth.name-clash=${MINECRAFT_AUTH_NAMECLASH:refuse}

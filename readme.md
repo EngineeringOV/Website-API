@@ -207,7 +207,8 @@ minecraft.auth.game-server=play.example.com:25565 # optional, default: this webs
 #minecraft.auth.name-clash=refuse                # see "Names"
 ```
 
-With Docker, set `MINECRAFT_AUTH_ENABLED=true` (and optionally `MINECRAFT_AUTH_NAME`, `MINECRAFT_GAME_SERVER`) in `.env`.
+With Docker, set `MINECRAFT_AUTH_ENABLED=true` (and optionally `MINECRAFT_AUTH_NAME`, `MINECRAFT_GAME_SERVER`,
+`MINECRAFT_AUTH_NAMECLASH=suffix`) in `.env`.
 The `acore_custom.mc_*` tables are created at startup (`sql/minecraft.sql.template` to create them by hand,
 `minecraft.auth.create-tables=false` to skip).
 
