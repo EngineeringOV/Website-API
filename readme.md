@@ -199,10 +199,13 @@ Turn it on in `.env` (Docker) and restart the API:
 
 ```
 MINECRAFT_AUTH_ENABLED=true
-MINECRAFT_AUTH_NAME=My Server                  # shown in the launcher
-MINECRAFT_GAME_SERVER=play.example.com         # optional, default: this website's host
-MINECRAFT_AUTH_NAMECLASH=suffix                # optional, needs mc-launch's server plugin (see below)
+MINECRAFT_AUTH_NAME=My Server
+MINECRAFT_GAME_SERVER=play.example.com
+MINECRAFT_AUTH_NAMECLASH=suffix
 ```
+
+The name is shown in the launcher. The game server defaults to this website's host. `suffix` is optional and
+needs mc-launch's server plugin (see below).
 
 Without Docker: `minecraft.auth.enabled=true` (and `minecraft.auth.name`, `minecraft.auth.game-server`,
 `minecraft.auth.name-clash`) in `application-prod.properties`. The `acore_custom.mc_*` tables are created on start.
